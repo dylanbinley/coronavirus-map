@@ -1,5 +1,5 @@
-import os
 import json
+import os
 import re
 
 import requests
@@ -15,9 +15,69 @@ BANNED_URLS = [
     'https://www.newsweek.com/'
 ]
 
-COLUMN_NAMES = list(range(61))
-COLUMN_NAMES[1] = 'DATE'
-COLUMN_NAMES[60] = 'URL'
+GDELT_COLUMN_NAMES = [
+    'GlobalEventID',
+    'Day',
+    'MonthYear',
+    'Year',
+    'FractionDate',
+    'Actor1Code',
+    'Actor1Name',
+    'Actor1CountryCode',
+    'Actor1KnownGroupCode',
+    'Actor1EthnicCode',
+    'Actor1Religion1Code',
+    'Actor1Religion2Code',
+    'Actor1Type1Code',
+    'Actor1Type2Code',
+    'Actor1Type3Code',
+    'Actor2Code',
+    'Actor2Name',
+    'Actor2CountryCode',
+    'Actor2KnownGroupCode',
+    'Actor2EthnicCode',
+    'Actor2Religion1Code',
+    'Actor2Religion2Code',
+    'Actor2Type1Code',
+    'Actor2Type2Code',
+    'Actor2Type3Code',
+    'IsRootEvent',
+    'EventCode',
+    'EventBaseCode',
+    'EventRootCode',
+    'QuadClass',
+    'GoldsteinScale',
+    'NumMentions',
+    'NumSources',
+    'NumArticles',
+    'AvgTone',
+    'Actor1Geo_Type',
+    'Actor1Geo_Fullname',
+    'Actor1Geo_CountryCode',
+    'Actor1Geo_ADM1Code',
+    'Actor1Geo_ADM2Code',
+    'Actor1Geo_Lat',
+    'Actor1Geo_Long',
+    'Actor1Geo_FeatureID',
+    'Actor2Geo_Type',
+    'Actor2Geo_Fullname',
+    'Actor2Geo_CountryCode',
+    'Actor2Geo_ADM1Code',
+    'Actor2Geo_ADM2Code',
+    'Actor2Geo_Lat',
+    'Actor2Geo_Long',
+    'Actor2Geo_FeatureID',
+    'Action2Geo_Type',
+    'Action2Geo_Fullname',
+    'Action2Geo_CountryCode',
+    'Action2Geo_ADM1Code',
+    'Action2Geo_ADM2Code',
+    'Action2Geo_Lat',
+    'Action2Geo_Long',
+    'Action2Geo_FeatureID',
+    'DATEADDED',
+    'SOURCEURL',
+]
 
 # GDELT_MASTER_FILE_LIST_URL = 'http://data.gdeltproject.org/gdeltv2/masterfilelist.txt'
 
@@ -26,6 +86,10 @@ GDELT_MOST_RECENT_FILE_LIST_URL = 'http://data.gdeltproject.org/gdeltv2/lastupda
 GDELT_MOST_RECENT_FILE_LIST  = requests.get(GDELT_MOST_RECENT_FILE_LIST_URL)
 
 NEWS_ARTICLES = []
+
+def create_gdelt_dataframe(url):
+    df_gdelt = pd.read_csv(url, names=GDELT_COLUMN_NAMES, delimiter='\t')
+    return df_gdelt[['DATEADDED', 'SOURCEURL']]
 
 def clean_date(date):
     date = str(date)
@@ -68,8 +132,8 @@ def write_output_file(file_name, file_directory, file_content):
 
 for line in GDELT_MOST_RECENT_FILE_LIST.text.splitlines():
     *_, NEWEST_GDELT_STORY_LIST_URL = line.split()
-    df = pd.read_csv(NEWEST_GDELT_STORY_LIST_URL, names=COLUMN_NAMES, delimiter='\t')
-    for i, (url, date) in enumerate(set(zip(df['URL'], df['DATE']))):
+    df = pd.read_csv(NEWEST_GDELT_STORY_LIST_URL, names=GDELT_COLUMN_NAMES, delimiter='\t')
+    for i, (url, date) in enumerate(set(zip(df['SOURCEURL'], df['DATEADDED']))):
         if any(url.startswith(banned_url) for banned_url in BANNED_URLS):
             continue
         print(f"Gathering content from {url}")
