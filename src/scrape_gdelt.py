@@ -6,6 +6,11 @@ import requests
 import pandas as pd
 from newspaper import Article
 
+#TODO(CBB): move gdelt dataframe creation to function
+#TODO(CBB): move article parsing and writing to function
+#TODO(CBB): move __main__ to function
+#TODO(CBB): add click cli
+
 BANNED_URLS = [
     'https://www.newsweek.com/'
 ]
