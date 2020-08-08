@@ -4,8 +4,8 @@ import src.news_retrieval_service as news_retrieval_service
 
 @click.command()
 @click.option('--output_directory', required=True, type=click.STRING)
-@click.option('--n_hours', required=False, type=click.STRING)
-@click.option('--n_days', required=False, type=click.STRING)
+@click.option('--n_hours', required=False, type=click.INT)
+@click.option('--n_days', required=False, type=click.INT)
 def retrieve_latest_news(output_directory, n_hours=None, n_days=None):
     retriever = news_retrieval_service.NewsRetrievalService()
     if not n_hours and not n_days:

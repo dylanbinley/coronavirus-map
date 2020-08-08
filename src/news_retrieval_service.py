@@ -99,4 +99,5 @@ class NewsRetrievalService:
         """Create dataframe from URL containing zipped CSV of GDELT data"""
         df_gdelt = pd.read_csv(url, names=self.gdelt_column_names, delimiter='\t')
         df_gdelt = df_gdelt[['GlobalEventID', 'DATEADDED', 'SOURCEURL']]
+        df_gdelt = df_gdelt.dropna()
         return df_gdelt
