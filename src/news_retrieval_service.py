@@ -17,23 +17,14 @@ from newspaper import Article
 # TODO(DLB): add click cli
 
 # TODO(DLB): test for URLs to add here
-with open('data/preprocessing/known_banned_urls.json', 'r') as file:
-    BANNED_URLS = json.load(file)
+BANNED_URLS = read_input_file('data/preprocessing/known_banned_urls.json')
+GDELT_COLUMN_NAMES = read_input_file('data/preprocessing/gdelt_column_names.json')
 
-with open('data/preprocessing/gdelt_column_names.json', 'r') as file:
-    GDELT_COLUMN_NAMES = json.load(file)
-
-# TODO(DLB): decide how to handle GDELT files -- always go to most_recent_file_list?
-# read master_file_list and grab N new entries? etc.
-
-
-# GDELT_MASTER_FILE_LIST_URL = 'http://data.gdeltproject.org/gdeltv2/masterfilelist.txt'
-
-GDELT_MOST_RECENT_FILE_LIST_URL = 'http://data.gdeltproject.org/gdeltv2/lastupdate.txt'
-
-GDELT_MOST_RECENT_FILE_LIST = requests.get(GDELT_MOST_RECENT_FILE_LIST_URL)
-
-NEWS_ARTICLES = []
+def find_latest_gdelt_dataset(url='http://data.gdeltproject.org/gdeltv2/lastupdate.txt'):
+    information_on_latest_dataset = requests.get(url).text
+    line_with_latest_dataset, *_ = information_on_latest_dataset.splitlines()
+    *_, latest_dataset_url = line_with_latest_dataset.split()
+    return latest_dataset_url
 
 # TODO(DLB): determine which GDELT_COLUMNS are important
 def create_gdelt_dataframe(url):
@@ -79,6 +70,11 @@ def create_article_file_name(title, url, date):
     file_name = '_'.join((clean_date(date), get_publisher(url), clean_title(title)))
     file_name = f'{file_name}.json'
     return file_name
+
+def read_input_file(file_name):
+    """Read JSON file"""
+    with open(file_name, 'r') as file:
+        return json.load(file)
 
 def write_output_file(file_name, file_directory, file_content):
     """Write JSON file"""
