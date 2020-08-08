@@ -6,108 +6,86 @@ Usage:
 
 import json
 import os
-import re
 
 import requests
 import pandas as pd
-from newspaper import Article
-
-# TODO(DLB): move article parsing and writing to function
-# TODO(DLB): move main loop to function
-# TODO(DLB): add click cli
-
-# TODO(DLB): test for URLs to add here
-BANNED_URLS = read_input_file('data/preprocessing/known_banned_urls.json')
-GDELT_COLUMN_NAMES = read_input_file('data/preprocessing/gdelt_column_names.json')
-
-def find_latest_gdelt_dataset(url='http://data.gdeltproject.org/gdeltv2/lastupdate.txt'):
-    information_on_latest_dataset = requests.get(url).text
-    line_with_latest_dataset, *_ = information_on_latest_dataset.splitlines()
-    *_, latest_dataset_url = line_with_latest_dataset.split()
-    return latest_dataset_url
-
-# TODO(DLB): determine which GDELT_COLUMNS are important
-def create_gdelt_dataframe(url):
-    """Create dataframe from URL containing zipped CSV of GDELT data"""
-    df_gdelt = pd.read_csv(url, names=GDELT_COLUMN_NAMES, delimiter='\t')
-    return df_gdelt[['DATEADDED', 'SOURCEURL']]
-
-def clean_date(date):
-    """Format date for file name"""
-    date = str(date)
-    return date
-
-def get_publisher(url):
-    """Format URL for file name"""
-    starting_substrings = [
-        'https://www.',
-        'http://www.',
-        'http://www3.',
-        'https://',
-        'http://',
-    ]
-    for substring in starting_substrings:
-        start = url.find(substring)
-        if start > -1:
-            start += len(substring)
-            break
-    url = url[start:]
-    end = url.find(r'/')
-    url = url[:end]
-    url = url[:end]
-    url = re.sub(r'\.', '-', url)
-    return url
-
-def clean_title(title):
-    """Format title for file name"""
-    title = title.lower()
-    title = re.sub(r'\W', '-', title)
-    title = re.sub(r'-+', '-', title)
-    return title
-
-def create_article_file_name(title, url, date):
-    """Create article file name"""
-    file_name = '_'.join((clean_date(date), get_publisher(url), clean_title(title)))
-    file_name = f'{file_name}.json'
-    return file_name
+from newspaper import Article, ArticleException
 
 def read_input_file(file_name):
     """Read JSON file"""
     with open(file_name, 'r') as file:
         return json.load(file)
 
-def write_output_file(file_name, file_directory, file_content):
+def write_output_file(file_directory, file_name, file_content):
     """Write JSON file"""
-    with open(os.path.join(file_directory, file_name), 'w') as file:
+    file_path = os.path.join(file_directory, file_name)
+    with open(file_path, 'w') as file:
         json.dump(file_content, file)
 
-# TODO(DLB): port this to function
-def __main__():
-    """Function string to rewrite after refactor"""
-    for line in GDELT_MOST_RECENT_FILE_LIST.text.splitlines():
-        *_, newest_gdelt_story_list_url = line.split()
-        df_gdelt = pd.read_csv(
-            newest_gdelt_story_list_url,
-            names=GDELT_COLUMN_NAMES,
-            delimiter='\t'
-        )
-        for i, (url, date) in enumerate(set(zip(df_gdelt['SOURCEURL'], df_gdelt['DATEADDED']))):
-            if any(url.startswith(banned_url) for banned_url in BANNED_URLS):
-                continue
-            print(f"Gathering content from {url}")
-            try:
-                article = Article(url)
-                article.download()
-                article.parse()
-                file_name = create_article_file_name(article.title, url, date)
-                write_output_file(
-                    file_name,
-                    'data/news_articles/',
-                    {'url': url, 'date': date, 'title': article.title, 'text': article.text}
-                )
-                ### handle file writing
-            except Exception as exception:
-                print(repr(exception))
-            if i > 5:
-                break
-        break
+URLS_THAT_CAUSE_EXCEPTIONS = read_input_file('data/preprocessing/urls_that_cause_exceptions.json')
+GDELT_COLUMN_NAMES = read_input_file('data/preprocessing/gdelt_column_names.json')
+
+def get_title_and_text(url):
+    """Get title and text from URL"""
+    article = Article(url)
+    article.download()
+    article.parse()
+    return article.title, article.text
+
+class NewsRetrievalService:
+    """
+    Service to retrieve news articles and write to JSON files, with added support for GDELT TSVs.
+    Methods:
+        create_article_file: retrives one URL and writes to file
+        scrape_gdelt_dataset: retrives all articles in a GDELT dataset, created by
+    """
+
+    def __init__(self,
+                 urls_to_skip=URLS_THAT_CAUSE_EXCEPTIONS,
+                 gdelt_column_names=GDELT_COLUMN_NAMES,
+                 gdelt_latest_update_url='http://data.gdeltproject.org/gdeltv2/lastupdate.txt'):
+        self.urls_to_skip = urls_to_skip
+        self.gdelt_column_names = gdelt_column_names
+        self.gdelt_latest_update_url = gdelt_latest_update_url
+
+    def create_article_file(self, url, event_id, file_directory):
+        """Create article file from URL, date, and event_id"""
+        existing_files = os.listdir(file_directory)
+        if any(f.startswith(str(event_id)) for f in existing_files):
+            return
+        if any(url.startswith(u) for u in self.urls_to_skip):
+            return
+        try:
+            title, text = get_title_and_text(url)
+            file_content = {'event_id': event_id, 'url': url, 'title': title, 'text': text}
+            write_output_file(file_directory, f'{event_id}.json', file_content)
+        except ArticleException as exception:
+            print(repr(exception))
+
+    def scrape_gdelt_dataset(self, url, file_directory):
+        """Scrape articles linked GDELT dataset and write them to files"""
+        df_gdelt = self._format_gdelt_dataframe(url)
+        for _, row in df_gdelt.iterrows():
+            self.create_article_file(
+                row['SOURCEURL'],
+                row['GlobalEventID'],
+                file_directory
+            )
+
+    def scrape_latest_gdelt_dataset(self, file_directory):
+        """Scrape latest GDELT dataset"""
+        latest_dataset_url = self.get_latest_gdelt_dataset_url()
+        self.scrape_gdelt_dataset(latest_dataset_url, file_directory)
+
+    def get_latest_gdelt_dataset_url(self):
+        """Get URL for latest GDELT dataset"""
+        information_on_latest_dataset = requests.get(self.gdelt_latest_update_url).text
+        line_with_latest_dataset, *_ = information_on_latest_dataset.splitlines()
+        *_, latest_dataset_url = line_with_latest_dataset.split()
+        return latest_dataset_url
+
+    def _format_gdelt_dataframe(self, url):
+        """Create dataframe from URL containing zipped CSV of GDELT data"""
+        df_gdelt = pd.read_csv(url, names=self.gdelt_column_names, delimiter='\t')
+        df_gdelt = df_gdelt[['GlobalEventID', 'DATEADDED', 'SOURCEURL']]
+        return df_gdelt
