@@ -27,8 +27,12 @@ def write_output_file(file_directory, file_name, file_content):
     with open(file_path, 'w') as file:
         json.dump(file_content, file)
 
-URLS_THAT_CAUSE_EXCEPTIONS = read_input_file('data/news_retrieval_service/urls_that_cause_exceptions.txt')
-GDELT_COLUMN_NAMES = read_input_file('data/news_retrieval_service/gdelt_column_names.txt')
+URLS_THAT_CAUSE_EXCEPTIONS = read_input_file(
+    'data/news_retrieval_service/urls_that_cause_exceptions.txt'
+)
+GDELT_COLUMN_NAMES = read_input_file(
+    'data/news_retrieval_service/gdelt_column_names.txt'
+)
 
 def get_title_and_text(url):
     """Get title and text from URL"""
