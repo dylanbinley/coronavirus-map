@@ -1,3 +1,6 @@
+# TODO(DLB): pylint
+# TODO(DLB): delete unused variables
+
 import json
 import os
 import re
@@ -6,15 +9,17 @@ import requests
 import pandas as pd
 from newspaper import Article
 
-#TODO(CBB): move gdelt dataframe creation to function
-#TODO(CBB): move article parsing and writing to function
-#TODO(CBB): move __main__ to function
-#TODO(CBB): add click cli
+# TODO(DLB): move article parsing and writing to function
+# TODO(DLB): move main loop to function
+# TODO(DLB): add click cli
 
+# TODO(DLB): test for URLs to add here
 BANNED_URLS = [
     'https://www.newsweek.com/'
 ]
 
+# TODO(DLB): move gdelt column names to new file for readability
+# TODO(DLB): read gdelt column names
 GDELT_COLUMN_NAMES = [
     'GlobalEventID',
     'Day',
@@ -79,6 +84,9 @@ GDELT_COLUMN_NAMES = [
     'SOURCEURL',
 ]
 
+# TODO(DLB): decide how to handle GDELT files -- always go to most_recent_file_list? read master_file_list and grab N new entries? etc.
+
+
 # GDELT_MASTER_FILE_LIST_URL = 'http://data.gdeltproject.org/gdeltv2/masterfilelist.txt'
 
 GDELT_MOST_RECENT_FILE_LIST_URL = 'http://data.gdeltproject.org/gdeltv2/lastupdate.txt'
@@ -87,6 +95,7 @@ GDELT_MOST_RECENT_FILE_LIST  = requests.get(GDELT_MOST_RECENT_FILE_LIST_URL)
 
 NEWS_ARTICLES = []
 
+# TODO(DLB): determine which GDELT_COLUMNS are important
 def create_gdelt_dataframe(url):
     df_gdelt = pd.read_csv(url, names=GDELT_COLUMN_NAMES, delimiter='\t')
     return df_gdelt[['DATEADDED', 'SOURCEURL']]
@@ -130,6 +139,7 @@ def write_output_file(file_name, file_directory, file_content):
     with open(os.path.join(file_directory, file_name), 'w') as file:
         json.dump(file_content, file)
 
+# TODO(DLB): port this to function
 for line in GDELT_MOST_RECENT_FILE_LIST.text.splitlines():
     *_, NEWEST_GDELT_STORY_LIST_URL = line.split()
     df = pd.read_csv(NEWEST_GDELT_STORY_LIST_URL, names=GDELT_COLUMN_NAMES, delimiter='\t')
