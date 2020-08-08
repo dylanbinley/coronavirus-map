@@ -4,6 +4,11 @@ Usage:
     # write how to use service
 """
 
+# TODO(DBB): move file writing to application layer
+# TODO(DBB): document usage
+# TODO(CBB/DBB): write readme
+# TODO(CBB): convert from package to application
+
 import json
 import os
 
@@ -22,8 +27,8 @@ def write_output_file(file_directory, file_name, file_content):
     with open(file_path, 'w') as file:
         json.dump(file_content, file)
 
-URLS_THAT_CAUSE_EXCEPTIONS = read_input_file('data/preprocessing/urls_that_cause_exceptions.json')
-GDELT_COLUMN_NAMES = read_input_file('data/preprocessing/gdelt_column_names.json')
+URLS_THAT_CAUSE_EXCEPTIONS = read_input_file('data/news_retrieval_service/urls_that_cause_exceptions.txt')
+GDELT_COLUMN_NAMES = read_input_file('data/news_retrieval_service/gdelt_column_names.txt')
 
 def get_title_and_text(url):
     """Get title and text from URL"""
