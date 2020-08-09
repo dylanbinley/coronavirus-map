@@ -1,12 +1,8 @@
 """
-Service to retrieve news articles from GDELT news tracker.
-Usage:
-    # write how to use service
+Service to generate and save training / testing data.
+Use via CLI:
+$ generate_data --output_directory=$OUTPUT_DIR --sample_size=$SAMPLE_SIZE --n_days=$N_DAYS
 """
-
-# TODO(DBB): document usage
-# TODO(CBB/DBB): write readme
-# TODO(CBB): convert from package to application
 
 import json
 import os
@@ -20,12 +16,24 @@ def write_output_file(file_path, file_content):
     with open(file_path, 'w') as file:
         json.dump(file_content, file)
 
+
+# pylint: disable=too-few-public-methods
 class DataGenerationService:
+    """Class to generate and save training / testing data."""
 
     def __init__(self):
         pass
 
+    # pylint: disable=no-self-use
     def generate_data(self, output_directory, sample_size, n_hours, n_days):
+        """
+        Method to generate and save training / testing data.
+        Args:
+            ouput_directory: string, directory where files will be written
+            sample_size: float (0, 1), fraction of total news articles to sample
+            n_hours: int, number of hours of news to scrape; or
+            n_days: int, number of days of news to scrape
+        """
         retriever = news_retrieval_service.NewsRetrievalService(sample_size=sample_size)
         if not n_hours and not n_days:
             news = retriever.scrape_latest_gdelt_dataset()
