@@ -4,6 +4,9 @@ Use via CLI:
 $ generate_data --output_directory=$OUTPUT_DIR --sample_size=$SAMPLE_SIZE --days=$DAYS
 """
 
+# pylint: disable=too-few-public-methods
+# pylint: disable=no-self-use
+
 import json
 import os
 
@@ -17,14 +20,12 @@ def write_output_file(file_path, file_content):
         json.dump(file_content, file)
 
 
-# pylint: disable=too-few-public-methods
 class DataGenerationService:
     """Class to generate and save training / testing data."""
 
     def __init__(self):
         pass
 
-    # pylint: disable=no-self-use
     def generate_data(self, output_directory, sample_size, hours, days):
         """
         Method to generate and save training / testing data.

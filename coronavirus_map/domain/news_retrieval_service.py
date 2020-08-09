@@ -15,21 +15,15 @@ Usage:
     retriever.scrape_gdelt_dataset(url)
 """
 
-import json
+# pylint: disable=wildcard-import
+# pylint: disable=dangerous-default-value
+# pylint: disable=no-self-use
 
 import requests
 import pandas as pd
 from newspaper import Article, ArticleException
 
-with open('data/news_retrieval_service/config.txt', 'r') as file:
-    CONFIG = json.load(file)
-
-EXCEPTION_CAUSING_URLS = CONFIG['EXCEPTION_CAUSING_URLS']
-GDELT_COLUMN_NAMES = CONFIG['GDELT_COLUMN_NAMES']
-NECESSARY_GDELT_COLUMNS = CONFIG['NECESSARY_GDELT_COLUMNS']
-GDELT_LATEST_UPDATE_URL = CONFIG['GDELT_LATEST_UPDATE_URL']
-GDELT_MASTER_LIST_URL = CONFIG['GDELT_MASTER_LIST_URL']
-
+from coronavirus_map.domain.news_retrieval_service_globals import *
 
 class NewsRetrievalService:
     """
@@ -46,7 +40,7 @@ class NewsRetrievalService:
                  gdelt_columns_to_keep=NECESSARY_GDELT_COLUMNS):
         self.blacklisted_domains = blacklisted_domains
         assert all(c in gdelt_columns_to_keep for c in NECESSARY_GDELT_COLUMNS)
-        self.gdelt_columns = gdelt_columns_to_keep
+        self.gdelt_columns_to_keep = gdelt_columns_to_keep
         self.sample_size = sample_size
 
     def scrape_gdelt_dataset(self, url):
@@ -71,7 +65,6 @@ class NewsRetrievalService:
             for result in self.scrape_gdelt_dataset(dataset_url):
                 yield result
 
-    # pylint: disable=no-self-use
     def _get_latest_gdelt_dataset_url(self):
         """Get URL for latest GDELT dataset"""
         information_on_latest_dataset = requests.get(GDELT_LATEST_UPDATE_URL).text
@@ -79,7 +72,6 @@ class NewsRetrievalService:
         *_, latest_dataset_url = line_with_latest_dataset.split()
         return latest_dataset_url
 
-    # pylint: disable=no-self-use
     def _get_number_of_gdelt_dataset_urls(self, n_datasets):
         """Get URL for latest n GDELT datasets"""
         gdelt_master_list = requests.get(GDELT_MASTER_LIST_URL).text
@@ -91,14 +83,13 @@ class NewsRetrievalService:
 
     def _format_gdelt_dataframe(self, url):
         """Create dataframe from URL containing zipped CSV of GDELT data"""
-        df_gdelt = pd.read_csv(url, names=GDELT_COLUMN_NAMES, delimiter='\t')
-        df_gdelt = df_gdelt[self.gdelt_columns]
+        df_gdelt = pd.read_csv(url, names=GDELT_COLUMNS, delimiter='\t')
+        df_gdelt = df_gdelt[self.gdelt_columns_to_keep]
         df_gdelt = df_gdelt.drop_duplicates(subset=["SOURCEURL"])
         df_gdelt = df_gdelt.dropna()
         df_gdelt = df_gdelt.sample(frac=self.sample_size)
         return df_gdelt
 
-    # pylint: disable=no-self-use
     def _extract_article_contents(self, url):
         """Get title and text from URL"""
         article = Article(url)
