@@ -21,7 +21,7 @@ import requests
 import pandas as pd
 from newspaper import Article, ArticleException
 
-with open('data/news_retrieval_service/CONFIG.txt', 'r') as file:
+with open('data/news_retrieval_service/config.txt', 'r') as file:
     CONFIG = json.load(file)
 
 EXCEPTION_CAUSING_URLS = CONFIG['EXCEPTION_CAUSING_URLS']

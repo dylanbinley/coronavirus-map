@@ -2,7 +2,7 @@
 
 import click
 
-import src.application.data_generation_service as data_generation_service
+import coronavirus_map.application.data_generation_service as data_generation_service
 
 @click.command()
 @click.option('--output_directory', required=True, type=click.STRING)

@@ -4,7 +4,7 @@ setup(
     name='coronavirus-map',
     entry_points={
         'console_scripts': [
-            'retrieve_latest_news = src.cli:retrieve_latest_news',
+            'generate_data = coronavirus_map.cli:generate_data',
         ],
     },
     install_requires=[
