@@ -1,4 +1,3 @@
-# application
 """
 Service to retrieve news articles from GDELT news tracker.
 Usage:
@@ -37,5 +36,5 @@ class NewsRetrievalService:
             retriever = news_retrieval_service.NewsRetrievalService()
             latest_news = retriever.scrape_latest_gdelt_datasets(4*24*n_days)
         for article in latest_news:
-            file_path = os.path.join(output_directory, f"{article['event_id']}.json")
+            file_path = os.path.join(output_directory, f"{article['GlobalEventID']}.json")
             write_output_file(file_path, article)

@@ -1,4 +1,3 @@
-# domain
 """
 Service to retrieve news articles from GDELT news tracker.
 Usage:
@@ -25,12 +24,14 @@ NECESSARY_GDELT_COLUMNS = config['NECESSARY_GDELT_COLUMNS']
 GDELT_LATEST_UPDATE_URL = config['GDELT_LATEST_UPDATE_URL']
 GDELT_MASTER_LIST_URL = config['GDELT_MASTER_LIST_URL']
 
-def get_title_and_text(url):
+def extract_article_contents(url):
     """Get title and text from URL"""
     article = Article(url)
     article.download()
     article.parse()
-    return article.title, article.text
+    return {'TITLE': article.title,
+            'TEXT': article.text,
+            'METADATA': dict(article.meta_data)}
 
 class NewsRetrievalService:
     """
@@ -45,19 +46,19 @@ class NewsRetrievalService:
                  gdelt_columns=NECESSARY_GDELT_COLUMNS,
                  sample_size=.1):
         self.urls_to_skip = urls_to_skip
-        # TODO(CBB): custom exception
         assert all(c in gdelt_columns for c in NECESSARY_GDELT_COLUMNS)
         self.gdelt_columns = gdelt_columns
         self.sample_size = sample_size
 
-    def create_article_dict(self, url, event_id):
-        """Create article file from URL, date, and event_id"""
-        # TODO(CBB): custom exceptions
+    def build_article_dict(self, row):
+        """Create article dictionary from dataframe row"""
+        article_dict = dict(row)
+        url = article_dict['SOURCEURL']
         if any(url.startswith(u) for u in self.urls_to_skip):
-            return
-        title, text = get_title_and_text(url)
-        # TODO(CBB): create a dict from the dataframe? then add this?
-        return {'event_id': event_id, 'url': url, 'title': title, 'text': text}
+            return article_dict
+        article_contents = extract_article_contents(url)
+        article_dict.update(article_contents)
+        return article_dict
 
 
     def scrape_gdelt_dataset(self, url):
@@ -65,7 +66,7 @@ class NewsRetrievalService:
         df_gdelt = self._format_gdelt_dataframe(url)
         for _, row in df_gdelt.iterrows():
             try:
-                article_dict = self.create_article_dict(row['SOURCEURL'], row['GlobalEventID'])
+                article_dict = self.build_article_dict(row)
                 yield article_dict
             except ArticleException as exception:
                 print(repr(exception))
