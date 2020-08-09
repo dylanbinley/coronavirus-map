@@ -16,23 +16,22 @@ import requests
 import pandas as pd
 from newspaper import Article, ArticleException
 
-def read_input_file(file_name):
-    """Read JSON file"""
-    with open(file_name, 'r') as file:
-        return json.load(file)
+with open('data/news_retrieval_service/config.txt', 'r') as file:
+    config = json.load(file)
+    
+EXCEPTION_CAUSING_URLS =  config['EXCEPTION_CAUSING_URLS']
+GDELT_COLUMN_NAMES =  config['GDELT_COLUMN_NAMES']
+NECESSARY_GDELT_COLUMNS = config['NECESSARY_GDELT_COLUMNS']
+GDELT_LATEST_UPDATE_URL = config['GDELT_LATEST_UPDATE_URL']
+GDELT_MASTER_LIST_URL = config['GDELT_MASTER_LIST_URL']
 
 def write_output_file(file_directory, file_name, file_content):
     """Write JSON file"""
     file_path = os.path.join(file_directory, file_name)
+    if not os.path.exists(os.path.dirname(file_path)):
+        os.makedirs(os.path.dirname(file_path))
     with open(file_path, 'w') as file:
         json.dump(file_content, file)
-
-URLS_THAT_CAUSE_EXCEPTIONS = read_input_file(
-    'data/news_retrieval_service/urls_that_cause_exceptions.txt'
-)
-GDELT_COLUMN_NAMES = read_input_file(
-    'data/news_retrieval_service/gdelt_column_names.txt'
-)
 
 def get_title_and_text(url):
     """Get title and text from URL"""
@@ -50,24 +49,30 @@ class NewsRetrievalService:
     """
 
     def __init__(self,
-                 urls_to_skip=URLS_THAT_CAUSE_EXCEPTIONS,
-                 gdelt_column_names=GDELT_COLUMN_NAMES,
-                 gdelt_latest_update_url='http://data.gdeltproject.org/gdeltv2/lastupdate.txt',
-                 gdelt_master_list_url='http://data.gdeltproject.org/gdeltv2/masterfilelist.txt'):
+                 urls_to_skip=EXCEPTION_CAUSING_URLS,
+                 gdelt_columns=NECESSARY_GDELT_COLUMNS,
+                 sample_size=.1):
         self.urls_to_skip = urls_to_skip
-        self.gdelt_column_names = gdelt_column_names
-        self.gdelt_latest_update_url = gdelt_latest_update_url
-        self.gdelt_master_list_url = gdelt_master_list_url
+        # TODO(CBB): custom exception
+        assert all(c in gdelt_columns for c in NECESSARY_GDELT_COLUMNS)
+        self.gdelt_columns = gdelt_columns
+        self.sample_size = sample_size
 
     def write_article_file(self, url, event_id, file_directory):
         """Create article file from URL, date, and event_id"""
-        existing_files = os.listdir(file_directory)
+        # TODO(CBB): remove overhead from this function
+        # TODO(CBB): custom exceptions
+        if os.path.isdir(file_directory):
+            existing_files = os.listdir(file_directory)
+        else:
+            existing_files = []
         if any(f.startswith(str(event_id)) for f in existing_files):
             return
         if any(url.startswith(u) for u in self.urls_to_skip):
             return
         try:
             title, text = get_title_and_text(url)
+            # TODO(CBB): create a dict from the dataframe? then add this?
             file_content = {'event_id': event_id, 'url': url, 'title': title, 'text': text}
             write_output_file(file_directory, f'{event_id}.json', file_content)
         except ArticleException as exception:
@@ -91,14 +96,14 @@ class NewsRetrievalService:
 
     def _get_latest_gdelt_dataset_url(self):
         """Get URL for latest GDELT dataset"""
-        information_on_latest_dataset = requests.get(self.gdelt_latest_update_url).text
+        information_on_latest_dataset = requests.get(GDELT_LATEST_UPDATE_URL).text
         line_with_latest_dataset, *_ = information_on_latest_dataset.splitlines()
         *_, latest_dataset_url = line_with_latest_dataset.split()
         return latest_dataset_url
 
     def _get_number_of_gdelt_dataset_urls(self, n_datasets):
         """Get URL for latest n GDELT datasets"""
-        gdelt_master_list = requests.get(self.gdelt_master_list_url).text
+        gdelt_master_list = requests.get(GDELT_MASTER_LIST_URL).text
         gdelt_master_list_lines = gdelt_master_list.splitlines()
         for line in gdelt_master_list_lines[-n_datasets:]:
             *_, dataset_url = line.split()
@@ -106,7 +111,9 @@ class NewsRetrievalService:
 
     def _format_gdelt_dataframe(self, url):
         """Create dataframe from URL containing zipped CSV of GDELT data"""
-        df_gdelt = pd.read_csv(url, names=self.gdelt_column_names, delimiter='\t')
-        df_gdelt = df_gdelt[['GlobalEventID', 'DATEADDED', 'SOURCEURL']]
+        df_gdelt = pd.read_csv(url, names=GDELT_COLUMN_NAMES, delimiter='\t')
+        df_gdelt = df_gdelt[self.gdelt_columns]
+        df_gdelt = df_gdelt.drop_duplicates(subset=["SOURCEURL"])
         df_gdelt = df_gdelt.dropna()
+        df_gdelt = df_gdelt.sample(frac=self.sample_size)
         return df_gdelt
