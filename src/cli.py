@@ -1,3 +1,5 @@
+"""Application-wide command line utilities"""
+
 import click
 
 import src.application.data_generation_service as data_generation_service

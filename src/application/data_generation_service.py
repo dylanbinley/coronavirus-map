@@ -10,7 +10,7 @@ import os
 import src.domain.news_retrieval_service as news_retrieval_service
 
 def write_output_file(file_path, file_content):
-    """Write JSON file"""
+    """Use JSON dump to write file"""
     if not os.path.exists(os.path.dirname(file_path)):
         os.makedirs(os.path.dirname(file_path))
     with open(file_path, 'w') as file:
