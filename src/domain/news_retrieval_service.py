@@ -1,10 +1,10 @@
+# domain
 """
 Service to retrieve news articles from GDELT news tracker.
 Usage:
     # write how to use service
 """
 
-# TODO(DBB): move file writing to application layer
 # TODO(DBB): document usage
 # TODO(CBB/DBB): write readme
 # TODO(CBB): convert from package to application
@@ -24,14 +24,6 @@ GDELT_COLUMN_NAMES =  config['GDELT_COLUMN_NAMES']
 NECESSARY_GDELT_COLUMNS = config['NECESSARY_GDELT_COLUMNS']
 GDELT_LATEST_UPDATE_URL = config['GDELT_LATEST_UPDATE_URL']
 GDELT_MASTER_LIST_URL = config['GDELT_MASTER_LIST_URL']
-
-def write_output_file(file_directory, file_name, file_content):
-    """Write JSON file"""
-    file_path = os.path.join(file_directory, file_name)
-    if not os.path.exists(os.path.dirname(file_path)):
-        os.makedirs(os.path.dirname(file_path))
-    with open(file_path, 'w') as file:
-        json.dump(file_content, file)
 
 def get_title_and_text(url):
     """Get title and text from URL"""
@@ -58,41 +50,38 @@ class NewsRetrievalService:
         self.gdelt_columns = gdelt_columns
         self.sample_size = sample_size
 
-    def write_article_file(self, url, event_id, file_directory):
+    def create_article_dict(self, url, event_id):
         """Create article file from URL, date, and event_id"""
-        # TODO(CBB): remove overhead from this function
         # TODO(CBB): custom exceptions
-        if os.path.isdir(file_directory):
-            existing_files = os.listdir(file_directory)
-        else:
-            existing_files = []
-        if any(f.startswith(str(event_id)) for f in existing_files):
-            return
         if any(url.startswith(u) for u in self.urls_to_skip):
             return
-        try:
-            title, text = get_title_and_text(url)
-            # TODO(CBB): create a dict from the dataframe? then add this?
-            file_content = {'event_id': event_id, 'url': url, 'title': title, 'text': text}
-            write_output_file(file_directory, f'{event_id}.json', file_content)
-        except ArticleException as exception:
-            print(repr(exception))
+        title, text = get_title_and_text(url)
+        # TODO(CBB): create a dict from the dataframe? then add this?
+        return {'event_id': event_id, 'url': url, 'title': title, 'text': text}
 
-    def scrape_gdelt_dataset(self, url, file_directory):
+
+    def scrape_gdelt_dataset(self, url):
         """Scrape articles linked GDELT dataset and write them to files"""
         df_gdelt = self._format_gdelt_dataframe(url)
         for _, row in df_gdelt.iterrows():
-            self.write_article_file(row['SOURCEURL'], row['GlobalEventID'], file_directory)
+            try:
+                article_dict = self.create_article_dict(row['SOURCEURL'], row['GlobalEventID'])
+                yield article_dict
+            except ArticleException as exception:
+                print(repr(exception))
 
-    def scrape_latest_gdelt_dataset(self, file_directory):
+    def scrape_latest_gdelt_dataset(self):
         """Scrape latest GDELT dataset"""
         latest_dataset_url = self._get_latest_gdelt_dataset_url()
-        self.scrape_gdelt_dataset(latest_dataset_url, file_directory)
+        for result in self.scrape_gdelt_dataset(latest_dataset_url):
+            yield result
 
-    def scrape_latest_gdelt_datasets(self, n_datasets, file_directory):
+    def scrape_latest_gdelt_datasets(self, n_datasets):
         """Scrape latest GDELT dataset"""
         for dataset_url in self._get_number_of_gdelt_dataset_urls(n_datasets):
-            self.scrape_gdelt_dataset(dataset_url, file_directory)
+            for result in self.scrape_gdelt_dataset(dataset_url):
+                yield result
+
 
     def _get_latest_gdelt_dataset_url(self):
         """Get URL for latest GDELT dataset"""
