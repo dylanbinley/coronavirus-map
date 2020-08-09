@@ -6,7 +6,7 @@ This is an in-progress application to find and map the lastest local news on COV
 
 To generate training and testing data, use the command line utility:
 ```
-generate_data --output_directory=OUTPUT_DIR --sample_size=SAMPLE_SIZE --n_days=N_DAYS
+generate_data --output_directory=OUTPUT_DIR --sample_size=SAMPLE_SIZE --days=DAYS
 ```
 
 ## To-Do List

@@ -83,9 +83,10 @@ class NewsRetrievalService:
     def _get_number_of_gdelt_dataset_urls(self, n_datasets):
         """Get URL for latest n GDELT datasets"""
         gdelt_master_list = requests.get(GDELT_MASTER_LIST_URL).text
-        gdelt_master_list_lines = gdelt_master_list.splitlines()
-        for line in gdelt_master_list_lines[-n_datasets:]:
-            *_, dataset_url = line.split()
+        gdelt_master_list = gdelt_master_list.splitlines()
+        gdelt_datasets = [l for l in gdelt_master_list if l.endswith('.export.CSV.zip')]
+        for dataset in gdelt_datasets[-n_datasets:]:
+            *_, dataset_url = dataset.split()
             yield dataset_url
 
     def _format_gdelt_dataframe(self, url):

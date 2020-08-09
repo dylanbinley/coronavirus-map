@@ -1,7 +1,7 @@
 """
 Service to generate and save training / testing data.
 Use via CLI:
-$ generate_data --output_directory=$OUTPUT_DIR --sample_size=$SAMPLE_SIZE --n_days=$N_DAYS
+$ generate_data --output_directory=$OUTPUT_DIR --sample_size=$SAMPLE_SIZE --days=$DAYS
 """
 
 import json
@@ -25,22 +25,22 @@ class DataGenerationService:
         pass
 
     # pylint: disable=no-self-use
-    def generate_data(self, output_directory, sample_size, n_hours, n_days):
+    def generate_data(self, output_directory, sample_size, hours, days):
         """
         Method to generate and save training / testing data.
         Args:
             ouput_directory: string, directory where files will be written
             sample_size: float (0, 1), fraction of total news articles to sample
-            n_hours: int, number of hours of news to scrape; or
-            n_days: int, number of days of news to scrape
+            hours: int, number of hours of news to scrape; or
+            days: int, number of days of news to scrape
         """
         retriever = news_retrieval_service.NewsRetrievalService(sample_size=sample_size)
-        if not n_hours and not n_days:
+        if not hours and not days:
             news = retriever.scrape_latest_gdelt_dataset()
-        elif n_hours:
-            news = retriever.scrape_latest_gdelt_datasets(4*n_hours)
+        elif hours:
+            news = retriever.scrape_latest_gdelt_datasets(4*hours)
         else:
-            news = retriever.scrape_latest_gdelt_datasets(4*24*n_days)
+            news = retriever.scrape_latest_gdelt_datasets(4*24*days)
         for article in news:
             file_path = os.path.join(output_directory, f"{article['GlobalEventID']}.json")
             write_output_file(file_path, article)
