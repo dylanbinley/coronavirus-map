@@ -19,4 +19,3 @@ generate_data --output_directory=OUTPUT_DIR --sample_size=SAMPLE_SIZE --days=DAY
 
 ## To-Do List
 1. Convert repository from package to application
-2. Rethink config file usage and location

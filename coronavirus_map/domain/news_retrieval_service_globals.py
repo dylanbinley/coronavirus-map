@@ -1,16 +1,23 @@
-{"GDELT_LATEST_UPDATE_URL": "http://data.gdeltproject.org/gdeltv2/lastupdate.txt",
-"GDELT_MASTER_LIST_URL": "http://data.gdeltproject.org/gdeltv2/masterfilelist.txt",
-"EXCEPTION_CAUSING_URLS":
-    ["https://www.newsweek.com/",
+"""Module containing global variables for use in news_retrieval_service"""
+
+EXCEPTION_CAUSING_URLS = [
+    "https://www.newsweek.com/",
     "https://www.forbes.com",
     "https://www.malaysiasun.com/",
-    "https://www.thetimes.co.uk"],
-"NECESSARY_GDELT_COLUMNS":
-    ["GlobalEventID",
+]
+
+GDELT_LATEST_UPDATE_URL = "http://data.gdeltproject.org/gdeltv2/lastupdate.txt"
+
+GDELT_MASTER_LIST_URL = "http://data.gdeltproject.org/gdeltv2/masterfilelist.txt"
+
+NECESSARY_GDELT_COLUMNS = [
+    "GlobalEventID",
     "DATEADDED",
-    "SOURCEURL"],
-"GDELT_COLUMN_NAMES":
-    ["GlobalEventID",
+    "SOURCEURL",
+]
+
+GDELT_COLUMNS = [
+    "GlobalEventID",
     "Day",
     "MonthYear",
     "Year",
@@ -70,4 +77,5 @@
     "Action2Geo_Long",
     "Action2Geo_FeatureID",
     "DATEADDED",
-    "SOURCEURL"]}
+    "SOURCEURL",
+]
