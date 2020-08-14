@@ -28,6 +28,9 @@ from coronavirus_map.domain.news_retrieval_service_globals import *
 class NewsRetrievalService:
     """
     Service to retrieve news articles and write to JSON files, with added support for GDELT TSVs.
+    Args:
+        sample_size: float (0, 1), fraction of articles to scrape
+        blacklisted_domains: list, URL's not to scrape using newspaper
     Methods:
         scrape_latest_gdelt_dataset: generates articles from last 15 minutes
         scrape_latest_gdelt_datasets: generates articles from last N*15 minutes
