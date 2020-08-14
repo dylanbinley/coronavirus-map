@@ -10,12 +10,6 @@ GDELT_LATEST_UPDATE_URL = "http://data.gdeltproject.org/gdeltv2/lastupdate.txt"
 
 GDELT_MASTER_LIST_URL = "http://data.gdeltproject.org/gdeltv2/masterfilelist.txt"
 
-NECESSARY_GDELT_COLUMNS = [
-    "GlobalEventID",
-    "DATEADDED",
-    "SOURCEURL",
-]
-
 GDELT_COLUMNS = [
     "GlobalEventID",
     "Day",

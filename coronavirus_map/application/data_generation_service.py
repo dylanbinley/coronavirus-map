@@ -43,5 +43,5 @@ class DataGenerationService:
         else:
             news = retriever.scrape_latest_gdelt_datasets(4*24*days)
         for article in news:
-            file_path = os.path.join(output_directory, f"{article['GlobalEventID']}.json")
+            file_path = os.path.join(output_directory, f"{article['GDELT']['GlobalEventID']}.json")
             write_output_file(file_path, article)
