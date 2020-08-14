@@ -1,11 +1,10 @@
 """
 Service to retrieve news articles from GDELT news tracker.
 Usage:
-    import src.domain.news_retrieval_service as news_retrieval_service
+    import coronavirus_map.domain.news_retrieval_service as news_retrieval_service
     retriever = news_retrieval_service.NewsRetrievalService(
         sample_size,
         blacklisted_domains,
-        gdelt_columns_to_keep
     )
     # to generate articles from the last 15 minutes
     retriever.scrape_latest_gdelt_dataset()
