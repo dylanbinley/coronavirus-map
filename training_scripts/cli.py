@@ -23,11 +23,11 @@ def generate_data(output_directory, sample_size, hours, days, balance_data):
         days: int, number of days of news to scrape
     """
     if balance_data:
-        dataframe_balancer = dataframe_balancing_service.DataFrameBalancingService(5)
+        balancer = dataframe_balancing_service.DataFrameBalancingService(5)
     else:
-        dataframe_balancer = None
+        balancer = None
     generator = data_generation_service.DataGenerationService()
-    generator.generate_data(output_directory, sample_size, hours, days, dataframe_balancer)
+    generator.generate_data(output_directory, sample_size, hours, days, balancer)
 
 
 @click.command()
@@ -40,6 +40,6 @@ def generate_balanced_dataset(data_directory, output_path):
         data_directory: directory containing JSON-formatted data
         output_file: location to write CSV
     """
-    dataframe_balancer = dataframe_balancing_service.DataFrameBalancingService(5)
-    dataset_generator = dataset_generator_service.DatasetGeneratorService(dataframe_balancer)
-    dataset_generator.balance_data(data_directory, output_path)
+    balancer = dataframe_balancing_service.DataFrameBalancingService(5)
+    generator = generator_service.DatasetGeneratorService(balancer)
+    generator.balance_data(data_directory, output_path)
