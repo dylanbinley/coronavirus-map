@@ -21,8 +21,6 @@ def generate_data(output_directory, sample_size, hours, days):
         sample_size: float (0, 1), fraction of total news articles to sample
         hours: int, number of hours of news to scrape; or
         days: int, number of days of news to scrape
-    Command line usage:
-        generate_data --output_directory=$OUTPUT_DIR --sample_size=$SAMPLE_SIZE --days=$DAYS
     """
     generator = data_generation_service.DataGenerationService()
     generator.generate_data(output_directory, sample_size, hours, days)
@@ -32,6 +30,12 @@ def generate_data(output_directory, sample_size, hours, days):
 @click.option('--data_directory', required=True, type=click.STRING)
 @click.option('--output_file', 'output_path', type=click.STRING, default='dataset.balanced')
 def generate_balanced_dataset(data_directory, output_path):
+    """
+    Function to generate CSV of GDELT GlobalID's for geographically balanced dataset.
+    Args:
+        data_directory: directory containing JSON-formatted data
+        output_file: location to write CSV
+    """
     dataframe_balancer = dataframe_balancing_service.DataFrameBalancingService(5)
     dataset_generator = dataset_generator_service.DatasetGeneratorService(dataframe_balancer)
     dataset_generator.balance_data(data_directory, output_path)

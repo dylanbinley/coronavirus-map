@@ -1,3 +1,8 @@
+"""Service to generate CSV of GDELT GlobalID's for geographically balanced dataset."""
+
+# pylint: disable=no-self-use
+# pylint: disable=too-few-public-methods
+
 import os
 import json
 
@@ -6,11 +11,11 @@ import pandas as pd
 import training_scripts.domain.dataframe_balancing_service as dataframe_balancing_service
 
 
-keys_to_balance = (
+KEYS_TO_BALANCE = (
     'GDELT',
     'Actor1Geo_CountryCode'
 )
-keys_to_keep = [
+KEYS_TO_KEEP = [
     ('GDELT', 'GlobalEventID'),
     ('GDELT', 'Actor1Geo_CountryCode'),
     ('GDELT', 'SOURCEURL')
@@ -31,19 +36,34 @@ def load_files_from_directory(directory):
 
 
 class DatasetGeneratorService:
+    """Class to generate CSV of GDELT GlobalID's for geographically balanced dataset."""
 
     def __init__(self, dataframe_balancer: dataframe_balancing_service):
         self.dataframe_balancer = dataframe_balancer
 
     def balance_data(self, directory, output_path):
+        """
+        Function to geographically balance dataset and write output to CSV.
+        Args:
+            data_directory: directory containing JSON-formatted data
+            output_file: location to write CSV
+        """
         data_dicts = load_files_from_directory(directory)
-        column_to_balance = '.'.join(keys_to_balance)
-        columns_to_keep = ['.'.join(keys) for keys in keys_to_keep]
-        df = self._file_contents_to_dataframe(data_dicts, columns_to_keep)
-        df_balanced = self.dataframe_balancer.balance_dataframe(df, column_to_balance)
-        df_balanced.to_csv(output_path)
+        column_to_balance = '.'.join(KEYS_TO_BALANCE)
+        columns_to_keep = ['.'.join(keys) for keys in KEYS_TO_KEEP]
+        dataframe = self._file_contents_to_dataframe(data_dicts, columns_to_keep)
+        dataframe_balanced = self.dataframe_balancer.balance_dataframe(dataframe, column_to_balance)
+        dataframe_balanced.to_csv(output_path)
 
     def _file_contents_to_dataframe(self, data_dicts, columns_to_keep):
-        df = pd.json_normalize(data_dicts)
-        df = df[columns_to_keep]
-        return df
+        """
+        Function to create pandas DataFrame from Python dictionaries.
+        Args:
+            data_dicts: list, Python dictionaries of data
+            columns_to_keep: list, columns to keep
+        Returns:
+            dataframe
+        """
+        dataframe = pd.json_normalize(data_dicts)
+        dataframe = dataframe[columns_to_keep]
+        return dataframe
