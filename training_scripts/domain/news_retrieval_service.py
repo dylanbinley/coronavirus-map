@@ -22,6 +22,7 @@ import requests
 import pandas as pd
 from newspaper import Article, ArticleException
 
+import training_scripts.domain.dataframe_balancing_service as dataframe_balancing_service
 from training_scripts.domain.news_retrieval_service_globals import *
 
 class NewsRetrievalService:
@@ -37,8 +38,10 @@ class NewsRetrievalService:
     """
 
     def __init__(self,
+                 dataframe_balancer: dataframe_balancing_service.DataFrameBalancingService,
                  sample_size=.1,
                  blacklisted_domains=EXCEPTION_CAUSING_URLS):
+        self.dataframe_balancer = dataframe_balancer
         self.blacklisted_domains = blacklisted_domains
         self.sample_size = sample_size
 
@@ -85,6 +88,8 @@ class NewsRetrievalService:
         df_gdelt = pd.read_csv(url, names=GDELT_COLUMNS, delimiter='\t')
         df_gdelt = df_gdelt.sample(frac=self.sample_size)
         df_gdelt = df_gdelt.drop_duplicates(subset=["SOURCEURL"])
+        if self.dataframe_balancer:
+            df_gdelt = self.dataframe_balancer.balance_dataframe(df_gdelt, 'Actor1Geo_CountryCode')
         return df_gdelt
 
     def _extract_article_contents(self, url):

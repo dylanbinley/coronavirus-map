@@ -12,8 +12,8 @@ import training_scripts.domain.dataframe_balancing_service as dataframe_balancin
 @click.option('--sample_size', required=True, type=click.FLOAT)
 @click.option('--hours', type=click.INT, default=0)
 @click.option('--days', type=click.INT, default=0)
-@click.option('--geographically_balance_data', default=False)
-def generate_data(output_directory, sample_size, hours, days):
+@click.option('--balance_data', type=click.BOOL, default=False)
+def generate_data(output_directory, sample_size, hours, days, balance_data):
     """
     Function to generate and save training / testing data.
     Args:
@@ -22,8 +22,12 @@ def generate_data(output_directory, sample_size, hours, days):
         hours: int, number of hours of news to scrape; or
         days: int, number of days of news to scrape
     """
+    if balance_data:
+        dataframe_balancer = dataframe_balancing_service.DataFrameBalancingService(5)
+    else:
+        dataframe_balancer = None
     generator = data_generation_service.DataGenerationService()
-    generator.generate_data(output_directory, sample_size, hours, days)
+    generator.generate_data(output_directory, sample_size, hours, days, dataframe_balancer)
 
 
 @click.command()

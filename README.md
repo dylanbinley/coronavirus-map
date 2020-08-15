@@ -14,7 +14,7 @@ to install the requirements and command line utilities.
 
 To generate training and testing data, use the command line utility:
 ```
-generate_data --output_directory=OUTPUT_DIR --sample_size=SAMPLE_SIZE --days=DAYS
+generate_data --output_directory=OUTPUT_DIR --sample_size=SAMPLE_SIZE --days=DAYS --balance_data=TRUE
 ```
 
 

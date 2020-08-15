@@ -11,6 +11,7 @@ import json
 import os
 
 import training_scripts.domain.news_retrieval_service as news_retrieval_service
+import training_scripts.domain.dataframe_balancing_service as dataframe_balancing_service
 
 def write_output_file(file_path, file_content):
     """Use JSON dump to write file"""
@@ -26,7 +27,7 @@ class DataGenerationService:
     def __init__(self):
         pass
 
-    def generate_data(self, output_directory, sample_size, hours, days):
+    def generate_data(self, output_directory, sample_size, hours, days, dataframe_balancer):
         """
         Method to generate and save training / testing data.
         Args:
@@ -35,7 +36,7 @@ class DataGenerationService:
             hours: int, number of hours of news to scrape; or
             days: int, number of days of news to scrape
         """
-        retriever = news_retrieval_service.NewsRetrievalService(sample_size=sample_size)
+        retriever = news_retrieval_service.NewsRetrievalService(dataframe_balancer, sample_size=sample_size)
         if not hours and not days:
             news = retriever.scrape_latest_gdelt_dataset()
         elif hours:
