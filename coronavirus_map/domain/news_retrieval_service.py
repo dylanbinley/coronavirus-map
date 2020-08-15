@@ -1,11 +1,10 @@
 """
 Service to retrieve news articles from GDELT news tracker.
 Usage:
-    import src.domain.news_retrieval_service as news_retrieval_service
+    import coronavirus_map.domain.news_retrieval_service as news_retrieval_service
     retriever = news_retrieval_service.NewsRetrievalService(
         sample_size,
         blacklisted_domains,
-        gdelt_columns_to_keep
     )
     # to generate articles from the last 15 minutes
     retriever.scrape_latest_gdelt_dataset()
@@ -28,19 +27,19 @@ from coronavirus_map.domain.news_retrieval_service_globals import *
 class NewsRetrievalService:
     """
     Service to retrieve news articles and write to JSON files, with added support for GDELT TSVs.
+    Args:
+        sample_size: float (0, 1), fraction of articles to scrape
+        blacklisted_domains: list, URL's not to scrape using newspaper
     Methods:
         scrape_latest_gdelt_dataset: generates articles from last 15 minutes
-        scrape_latest_gdelt_datasets: generates articles from last n_datasets
+        scrape_latest_gdelt_datasets: generates articles from last N*15 minutes
         scrape_gdelt_dataset: generates articles from known GDELT dataset URL
     """
 
     def __init__(self,
                  sample_size=.1,
-                 blacklisted_domains=EXCEPTION_CAUSING_URLS,
-                 gdelt_columns_to_keep=NECESSARY_GDELT_COLUMNS):
+                 blacklisted_domains=EXCEPTION_CAUSING_URLS):
         self.blacklisted_domains = blacklisted_domains
-        assert all(c in gdelt_columns_to_keep for c in NECESSARY_GDELT_COLUMNS)
-        self.gdelt_columns_to_keep = gdelt_columns_to_keep
         self.sample_size = sample_size
 
     def scrape_gdelt_dataset(self, url):
@@ -84,10 +83,8 @@ class NewsRetrievalService:
     def _format_gdelt_dataframe(self, url):
         """Create dataframe from URL containing zipped CSV of GDELT data"""
         df_gdelt = pd.read_csv(url, names=GDELT_COLUMNS, delimiter='\t')
-        df_gdelt = df_gdelt[self.gdelt_columns_to_keep]
-        df_gdelt = df_gdelt.drop_duplicates(subset=["SOURCEURL"])
-        df_gdelt = df_gdelt.dropna()
         df_gdelt = df_gdelt.sample(frac=self.sample_size)
+        df_gdelt = df_gdelt.drop_duplicates(subset=["SOURCEURL"])
         return df_gdelt
 
     def _extract_article_contents(self, url):
@@ -95,16 +92,19 @@ class NewsRetrievalService:
         article = Article(url)
         article.download()
         article.parse()
-        return {'TITLE': article.title,
-                'TEXT': article.text,
-                'METADATA': dict(article.meta_data)}
+        article_content = {
+            'TITLE': article.title,
+            'TEXT': article.text,
+            'METADATA': article.meta_data,
+        }
+        return article_content
 
     def _build_article_dict(self, row):
         """Create article dictionary from dataframe row"""
-        article_dict = dict(row)
-        url = article_dict['SOURCEURL']
+        article_dict = {}
+        article_dict['GDELT'] = dict(row.dropna())
+        url = article_dict['GDELT']['SOURCEURL']
         if any(url.startswith(u) for u in self.blacklisted_domains):
             return article_dict
-        article_contents = self._extract_article_contents(url)
-        article_dict.update(article_contents)
+        article_dict['ARTICLE'] = self._extract_article_contents(url)
         return article_dict
