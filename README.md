@@ -25,3 +25,4 @@ generate_balanced_dataset --data_directory=DATA_DIRECTORY --output_file=OUTPUT_F
 
 ## To-Do List
 1. Convert repository from package to application
+2. Remove generate_balanced_dataset command line util in favor of an option to balance data before downloading
