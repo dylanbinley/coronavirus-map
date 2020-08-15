@@ -22,7 +22,7 @@ import requests
 import pandas as pd
 from newspaper import Article, ArticleException
 
-from coronavirus_map.domain.news_retrieval_service_globals import *
+from training_scripts.domain.news_retrieval_service_globals import *
 
 class NewsRetrievalService:
     """

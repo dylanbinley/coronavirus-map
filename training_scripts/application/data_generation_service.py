@@ -10,7 +10,7 @@ $ generate_data --output_directory=$OUTPUT_DIR --sample_size=$SAMPLE_SIZE --days
 import json
 import os
 
-import coronavirus_map.domain.news_retrieval_service as news_retrieval_service
+import training_scripts.domain.news_retrieval_service as news_retrieval_service
 
 def write_output_file(file_path, file_content):
     """Use JSON dump to write file"""
