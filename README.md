@@ -18,9 +18,9 @@ generate_data --output_directory=OUTPUT_DIR --sample_size=SAMPLE_SIZE --days=DAY
 ```
 
 
-To generate a CSV of IDs to include in a geographically balanced dataset, use the command line utility:
+To generate a CSV of GDELT GlobalEventIDs to include in a geographically balanced dataset, use the command line utility:
 ```
-generate_balanced_dataset --data_directory=DATA_DIRECTORY --output_file=OUTPUT_FILE
+select_balanced_dataset --data_directory=DATA_DIRECTORY --output_file=OUTPUT_FILE
 ```
 
 ## To-Do List

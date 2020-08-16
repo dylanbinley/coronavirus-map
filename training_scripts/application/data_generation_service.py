@@ -11,7 +11,6 @@ import json
 import os
 
 import training_scripts.domain.news_retrieval_service as news_retrieval_service
-import training_scripts.domain.dataframe_balancing_service as dataframe_balancing_service
 
 def write_output_file(file_path, file_content):
     """Use JSON dump to write file"""

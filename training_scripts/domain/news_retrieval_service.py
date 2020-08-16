@@ -22,7 +22,7 @@ import requests
 import pandas as pd
 from newspaper import Article, ArticleException
 
-import training_scripts.domain.dataframe_balancing_service as dataframe_balancing_service
+import training_scripts.domain.dataframe_sampling_service as dataframe_sampling_service
 from training_scripts.domain.news_retrieval_service_globals import *
 
 class NewsRetrievalService:
@@ -38,7 +38,7 @@ class NewsRetrievalService:
     """
 
     def __init__(self,
-                 dataframe_balancer: dataframe_balancing_service.DataFrameBalancingService,
+                 dataframe_balancer: dataframe_sampling_service.DataFrameBalancingService,
                  sample_size=.1,
                  blacklisted_domains=EXCEPTION_CAUSING_URLS):
         self.dataframe_balancer = dataframe_balancer

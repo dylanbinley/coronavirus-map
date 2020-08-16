@@ -8,8 +8,7 @@ import json
 
 import pandas as pd
 
-import training_scripts.domain.dataframe_balancing_service as dataframe_balancing_service
-
+import training_scripts.domain.dataframe_sampling_service as dataframe_sampling_service
 
 KEYS_TO_BALANCE = (
     'GDELT',
@@ -20,7 +19,6 @@ KEYS_TO_KEEP = [
     ('GDELT', 'Actor1Geo_CountryCode'),
     ('GDELT', 'SOURCEURL')
 ]
-
 
 def load_files_from_directory(directory):
     """Function to load JSONs of data from a directory."""
@@ -38,10 +36,10 @@ def load_files_from_directory(directory):
 class DatasetGeneratorService:
     """Class to generate CSV of GDELT GlobalID's for geographically balanced dataset."""
 
-    def __init__(self, dataframe_balancer: dataframe_balancing_service.DataFrameBalancingService):
+    def __init__(self, dataframe_balancer: dataframe_sampling_service.DataFrameBalancingService):
         self.dataframe_balancer = dataframe_balancer
 
-    def balance_data(self, directory, output_path):
+    def select_data(self, directory, output_path):
         """
         Function to geographically balance dataset and write output to CSV.
         Args:

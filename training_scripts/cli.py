@@ -3,9 +3,8 @@
 import click
 
 import training_scripts.application.data_generation_service as data_generation_service
-import training_scripts.application.dataset_generator_service as dataset_generator_service
-import training_scripts.domain.dataframe_balancing_service as dataframe_balancing_service
-
+import training_scripts.application.dataset_selection_service as dataset_selection_service
+import training_scripts.domain.dataframe_sampling_service as dataframe_sampling_service
 
 @click.command()
 @click.option('--output_directory', required=True, type=click.STRING)
@@ -23,7 +22,7 @@ def generate_data(output_directory, sample_size, hours, days, balance_data):
         days: int, number of days of news to scrape
     """
     if balance_data:
-        balancer = dataframe_balancing_service.DataFrameBalancingService(5)
+        balancer = dataframe_sampling_service.DataFrameBalancingService(5)
     else:
         balancer = None
     generator = data_generation_service.DataGenerationService()
@@ -33,13 +32,13 @@ def generate_data(output_directory, sample_size, hours, days, balance_data):
 @click.command()
 @click.option('--data_directory', required=True, type=click.STRING)
 @click.option('--output_file', 'output_path', type=click.STRING, default='dataset.balanced')
-def generate_balanced_dataset(data_directory, output_path):
+def select_balanced_dataset(data_directory, output_path):
     """
     Function to generate CSV of GDELT GlobalID's for geographically balanced dataset.
     Args:
         data_directory: directory containing JSON-formatted data
         output_file: location to write CSV
     """
-    balancer = dataframe_balancing_service.DataFrameBalancingService(5)
-    generator = generator_service.DatasetGeneratorService(balancer)
-    generator.balance_data(data_directory, output_path)
+    balancer = dataframe_sampling_service.DataFrameBalancingService(5)
+    selector = dataset_selection_service.DatasetGeneratorService(balancer)
+    selector.select_data(data_directory, output_path)
