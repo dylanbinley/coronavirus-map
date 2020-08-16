@@ -8,10 +8,8 @@ import json
 import pandas as pd
 import plotly.express as px
 
-
 # TODO: merge in coronavirus_map.filter
-import coronavirus_map.filter as article_filtering_service
-
+import coronavirus_map.domain.news_filtering_service as article_filtering_service
 # TODO: return actual articles in coronavirus_filtering_service?
 
 class MapGenerationService:
@@ -24,32 +22,16 @@ class MapGenerationService:
     def __init__(self):
         pass
 
-    def generate_map(self, data_directory, output_file_path):
+    def generate_map(self, data_dicts, output_file_path):
         """
         Function to generate map.
         Args:
-            data_directory: string, path to directory containing data files
+            data_dict: list, dictionaries containing article data
             output_file_path: string, path to save HTML map
         """
-        data_dicts = self._load_data_from_directory(data_directory)
         dataframe = self._convert_data_dicts_to_dataframe(data_dicts)
         plotly_map = self._generate_map_from_dataframe(dataframe)
         plotly_map.write_html(output_file_path)
-
-    def _load_data_from_directory(self, directory):
-        """
-        Function to load data from directory.
-        Args:
-            data_directory: string, path to directory containing data files
-        Returns:
-            data_dicts: list, dictionaries of file contents
-        """
-        coronavirus_file_paths = article_filtering_service.main(directory)
-        def load_json(file_path):
-            with open(file_path, 'r') as file:
-                return json.load(file)
-        data_dicts = [load_json(file_path) for file_path in coronavirus_file_paths]
-        return data_dicts
 
     def _convert_data_dicts_to_dataframe(self, data_dicts):
         """
@@ -80,5 +62,5 @@ class MapGenerationService:
             height=1500
         )
         plotly_map.update_layout(mapbox_style='open-street-map')
-        plotly_map.update_layout(margin={'r':0, 't':0, 'l':0, 'b':0})
+        plotly_map.update_layout(margin={'r': 0, 't': 0, 'l': 0, 'b': 0})
         return plotly_map
