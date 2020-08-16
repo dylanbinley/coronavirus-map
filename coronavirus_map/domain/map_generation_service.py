@@ -12,7 +12,7 @@ class MapGenerationService:
     """
     Class that generates a map displaying COVID-19 news around the world.
     Methods:
-        generate_map: generates map and writes to HTML file
+        generate_map: generates map
     """
 
     def __init__(self):
