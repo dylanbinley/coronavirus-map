@@ -9,7 +9,9 @@ setup(
         ],
     },
     install_requires=[
-        'pandas',
+        'click',
         'newspaper3k',
+        'pandas',
+        'requests',
     ]
 )

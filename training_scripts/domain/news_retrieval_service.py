@@ -27,7 +27,7 @@ from training_scripts.domain.news_retrieval_service_globals import *
 
 class NewsRetrievalService:
     """
-    Service to retrieve news articles and write to JSON files, with added support for GDELT TSVs.
+    Service to retrieve news articles and write to JSON files from GDELT TSVs.
     Args:
         sample_size: float (0, 1), fraction of articles to scrape
         blacklisted_domains: list, URL's not to scrape using newspaper
