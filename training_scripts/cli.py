@@ -1,4 +1,4 @@
-"""Application-wide command line utilities"""
+"""Training script command line utilities"""
 
 import click
 
@@ -17,7 +17,7 @@ def generate_data(output_directory, sample_size, hours, days, balance_data):
     """
     Function to generate and save training / testing data.
     Args:
-        ouput_directory: string, directory where files will be written
+        output_directory: string, directory where files will be written
         sample_size: float (0, 1), fraction of total news articles to sample
         hours: int, number of hours of news to scrape; or
         days: int, number of days of news to scrape
