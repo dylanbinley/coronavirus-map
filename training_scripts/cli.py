@@ -21,6 +21,7 @@ def generate_data(output_directory, sample_size, hours, days, balance_data):
         sample_size: float (0, 1), fraction of total news articles to sample
         hours: int, number of hours of news to scrape; or
         days: int, number of days of news to scrape
+        balance_data: bool, whether or not to geographically balance dataset
     """
     balancer = dataframe_sampling_service.DataFrameSamplingService()
     retriever = news_retrieval_service.NewsRetrievalService(balancer, sample_size, balance_data)
@@ -39,5 +40,5 @@ def select_balanced_dataset(data_directory, output_path):
         output_file: location to write CSV
     """
     balancer = dataframe_sampling_service.DataFrameSamplingService()
-    selector = dataset_selection_service.DatasetGeneratorService(balancer)
+    selector = dataset_selection_service.DatasetSelectionService(balancer)
     selector.select_data(data_directory, output_path)

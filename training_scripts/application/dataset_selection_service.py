@@ -33,8 +33,14 @@ def load_files_from_directory(directory):
     return file_contents
 
 
-class DatasetGeneratorService:
-    """Class to select geographically balanced dataset and write to CSV."""
+class DatasetSelectionService:
+    """
+    Class to select geographically balanced dataset and write to CSV.
+    Args:
+        sampler: DataFrameSamplingService
+    Methods:
+        select_data: selects geographically balanced subset of data and writes to CSV
+    """
 
     def __init__(self, sampler: dataframe_sampling_service.DataFrameSamplingService):
         self.sampler = sampler

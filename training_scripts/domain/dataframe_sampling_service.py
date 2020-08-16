@@ -5,7 +5,13 @@
 import pandas as pd
 
 class DataFrameSamplingService:
-    """Class to sample dataframe to N*mean with respect to a specific column."""
+    """
+    Class to sample dataframe to N*mean with respect to a specific column.
+    Args:
+        n_means: maximum multiples of the mean number of samples per column value to allow
+    Methods:
+        sample_dataframe: method to sample dataframe
+    """
 
     def __init__(self, n_means=5):
         self.n_means = n_means
