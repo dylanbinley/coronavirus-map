@@ -54,7 +54,7 @@ class MapGenerationService:
             hover_name='ARTICLE.TITLE',
             hover_data=['GDELT.SOURCEURL', 'GDELT.Actor1Geo_Fullname'],
             zoom=1,
-            height=1500
+            height=750
         )
         plotly_map.update_layout(mapbox_style='open-street-map')
         plotly_map.update_layout(margin={'r': 0, 't': 0, 'l': 0, 'b': 0})
