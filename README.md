@@ -14,7 +14,11 @@ to install the requirements and command line utilities.
 
 To generate training and testing data, use the command line utility:
 ```
-generate_data --output_directory=OUTPUT_DIR --sample_size=SAMPLE_SIZE --days=DAYS
+generate_data --output_directory=OUTPUT_DIR --sample_size=SAMPLE_SIZE --days=DAYS --balance_data=BALANCE_DATA
+```
+To generate a CSV of GDELT GlobalEventIDs to include in a geographically balanced dataset, use the command line utility:
+```
+select_balanced_dataset --data_directory=DATA_DIRECTORY --output_file=OUTPUT_FILE
 ```
 
 ## To-Do List
