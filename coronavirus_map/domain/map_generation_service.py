@@ -8,10 +8,6 @@ import json
 import pandas as pd
 import plotly.express as px
 
-# TODO: merge in coronavirus_map.filter
-import coronavirus_map.domain.news_filtering_service as article_filtering_service
-# TODO: return actual articles in coronavirus_filtering_service?
-
 class MapGenerationService:
     """
     Class that generates a map displaying COVID-19 news around the world.
