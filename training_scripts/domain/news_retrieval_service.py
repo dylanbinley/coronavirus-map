@@ -38,10 +38,12 @@ class NewsRetrievalService:
     """
 
     def __init__(self,
-                 dataframe_balancer: dataframe_sampling_service.DataFrameBalancingService,
-                 sample_size=.1,
+                 sampler: dataframe_sampling_service.DataFrameSamplingService,
+                 sample_size,
+                 balance_data,
                  blacklisted_domains=EXCEPTION_CAUSING_URLS):
-        self.dataframe_balancer = dataframe_balancer
+        self.balance_data = balance_data
+        self.sampler = sampler
         self.blacklisted_domains = blacklisted_domains
         self.sample_size = sample_size
 
@@ -88,8 +90,8 @@ class NewsRetrievalService:
         df_gdelt = pd.read_csv(url, names=GDELT_COLUMNS, delimiter='\t')
         df_gdelt = df_gdelt.sample(frac=self.sample_size)
         df_gdelt = df_gdelt.drop_duplicates(subset=["SOURCEURL"])
-        if self.dataframe_balancer:
-            df_gdelt = self.dataframe_balancer.balance_dataframe(df_gdelt, 'Actor1Geo_CountryCode')
+        if self.balance_data:
+            df_gdelt = self.sampler.sample_dataframe(df_gdelt, 'Actor1Geo_CountryCode')
         return df_gdelt
 
     def _extract_article_contents(self, url):

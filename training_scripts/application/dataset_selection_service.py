@@ -1,4 +1,4 @@
-"""Service to generate CSV of GDELT GlobalID's for geographically balanced dataset."""
+"""Service to select geographically balanced dataset and write to CSV."""
 
 # pylint: disable=no-self-use
 # pylint: disable=too-few-public-methods
@@ -34,10 +34,10 @@ def load_files_from_directory(directory):
 
 
 class DatasetGeneratorService:
-    """Class to generate CSV of GDELT GlobalID's for geographically balanced dataset."""
+    """Class to select geographically balanced dataset and write to CSV."""
 
-    def __init__(self, dataframe_balancer: dataframe_sampling_service.DataFrameBalancingService):
-        self.dataframe_balancer = dataframe_balancer
+    def __init__(self, sampler: dataframe_sampling_service.DataFrameSamplingService):
+        self.sampler = sampler
 
     def select_data(self, directory, output_path):
         """
@@ -50,7 +50,7 @@ class DatasetGeneratorService:
         column_to_balance = '.'.join(KEYS_TO_BALANCE)
         columns_to_keep = ['.'.join(keys) for keys in KEYS_TO_KEEP]
         dataframe = self._file_contents_to_dataframe(data_dicts, columns_to_keep)
-        dataframe_balanced = self.dataframe_balancer.balance_dataframe(dataframe, column_to_balance)
+        dataframe_balanced = self.sampler.sample_dataframe(dataframe, column_to_balance)
         dataframe_balanced.to_csv(output_path)
 
     def _file_contents_to_dataframe(self, data_dicts, columns_to_keep):

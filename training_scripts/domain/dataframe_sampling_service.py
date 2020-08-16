@@ -4,13 +4,13 @@
 
 import pandas as pd
 
-class DataFrameBalancingService:
+class DataFrameSamplingService:
     """Class to sample dataframe to N*mean with respect to a specific column."""
 
-    def __init__(self, n_means):
+    def __init__(self, n_means=5):
         self.n_means = n_means
 
-    def balance_dataframe(self, dataframe, column):
+    def sample_dataframe(self, dataframe, column):
         """
         Function to sample dataframe with respect to a specifc column.
         Args:

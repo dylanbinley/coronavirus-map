@@ -23,10 +23,11 @@ def write_output_file(file_path, file_content):
 class DataGenerationService:
     """Class to generate and save training / testing data."""
 
-    def __init__(self):
-        pass
+    def __init__(self,
+                 news_retriever: news_retrieval_service.NewsRetrievalService):
+        self.retriever = news_retriever
 
-    def generate_data(self, output_directory, sample_size, hours, days, dataframe_balancer):
+    def generate_data(self, output_directory, hours, days):
         """
         Method to generate and save training / testing data.
         Args:
@@ -35,13 +36,12 @@ class DataGenerationService:
             hours: int, number of hours of news to scrape; or
             days: int, number of days of news to scrape
         """
-        retriever = news_retrieval_service.NewsRetrievalService(dataframe_balancer, sample_size=sample_size)
         if not hours and not days:
-            news = retriever.scrape_latest_gdelt_dataset()
+            news = self.retriever.scrape_latest_gdelt_dataset()
         elif hours:
-            news = retriever.scrape_latest_gdelt_datasets(4*hours)
+            news = self.retriever.scrape_latest_gdelt_datasets(4*hours)
         else:
-            news = retriever.scrape_latest_gdelt_datasets(4*24*days)
+            news = self.retriever.scrape_latest_gdelt_datasets(4*24*days)
         for article in news:
             file_path = os.path.join(output_directory, f"{article['GDELT']['GlobalEventID']}.json")
             write_output_file(file_path, article)
