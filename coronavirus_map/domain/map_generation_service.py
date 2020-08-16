@@ -18,16 +18,15 @@ class MapGenerationService:
     def __init__(self):
         pass
 
-    def generate_map(self, data_dicts, output_file_path):
+    def generate_map(self, data_dicts):
         """
         Function to generate map.
         Args:
             data_dict: list, dictionaries containing article data
-            output_file_path: string, path to save HTML map
         """
         dataframe = self._convert_data_dicts_to_dataframe(data_dicts)
         plotly_map = self._generate_map_from_dataframe(dataframe)
-        plotly_map.write_html(output_file_path)
+        return plotly_map
 
     def _convert_data_dicts_to_dataframe(self, data_dicts):
         """
