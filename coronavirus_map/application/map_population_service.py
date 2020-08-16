@@ -1,21 +1,32 @@
-# we need a service that runs the full pipeline:
-#     1. pulls new data from GDELT
-#     2. filters out irrelevant data
-#     3. plots relevant data
-#     4. writes map to HTML file
-# the following code impliments part of that pipeline and can be combined with
-# training_scripts.domain.news_retrieval_service for full effect
+"""Service to populate a map with last 15 minutes of GDELT data."""
 
-# todo: import news retrieval service
+import training_scripts.domain.dataframe_sampling_service as dataframe_sampling_service
+import training_scripts.domain.news_retrieval_service as news_retrieval_service
 import coronavirus_map.domain.news_filtering_service as news_filtering_service
 import coronavirus_map.domain.map_generation_service as map_generation_service
 
-# todo: create retriever
-filterer = news_filtering_service.NewsFilteringService()
-mapper = map_generation_service.MapGenerationService()
+class MapPopulationService:
+    """
+    Class that populates a map with last 15 minutes of GDELT data.
+    Args:
+        retriever: news_retrieval_service.NewsRetrievalService
+        filterer: news_filtering_service.NewsFilteringService
+        mapper: map_generation_service.MapGenerationService
+    Methods:
+        populate_map: populates map
+    """
 
-# todo: use retriever to get data_dicts
-covid_data_dicts = filterer.find_coronavirus_stories(data_dicts)
-plotly_map = mapper.generate_map(covid_data_dicts)
-# todo: write plotly map to html file
-plotly_map.show()
+    def __init__(self,
+                 retriever: news_retrieval_service.NewsRetrievalService,
+                 filterer: news_filtering_service.NewsFilteringService,
+                 mapper: map_generation_service.MapGenerationService):
+        self.retriever = retriever
+        self.filterer = filterer
+        self.mapper = mapper
+
+    def populate_map(self):
+        """Function to populate map with last 15 minutes of GDELT data."""
+        news = self.retriever.scrape_latest_gdelt_dataset()
+        covid_news = self.filterer.find_coronavirus_stories(news)
+        plotly_map = self.mapper.generate_map(covid_news)
+        return plotly_map
