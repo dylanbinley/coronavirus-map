@@ -7,7 +7,7 @@ class NewsFilteringService:
     """
     Class to locate news articles related to the novel coronavirus.
     Methods:
-        find_coronavirus_stories: identify news stories that mention the coronavirus
+        find_coronavirus_stories: identifies news stories that mention the coronavirus
     """
 
     def __init__(self):
@@ -22,15 +22,15 @@ class NewsFilteringService:
             coronavirus_data_dicts: list, dicionaries containing coronavirus article data
         """
         coronavirus_data_dicts = []
-        for article in data_dicts:
-            title = article.get('ARTICLE', {}).get('TITLE', '')
+        for data_dict in data_dicts:
+            title = data_dict.get('ARTICLE', {}).get('TITLE', '')
             if self._string_contains_covid(title):
-                coronavirus_data_dicts.append(article)
+                coronavirus_data_dicts.append(data_dict)
         return coronavirus_data_dicts
 
     def _string_contains_covid(self, string):
         """
-        Function to determine whether or not an article title contains coronavirus-related words.
+        Function to determine whether or not a string contains coronavirus-related words.
         Args:
             string: str
         Returns:
