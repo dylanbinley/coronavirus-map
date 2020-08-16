@@ -1,22 +1,19 @@
 import os
 import json
 
-def main(directory):
-    directory_file = os.listdir(directory)
+def find_coronavirus_stories(directory):
+    files_in_directory = os.listdir(directory)
     coronavirus_stories = []
-    for filepath in directory_file:
+    for filepath in files_in_directory:
         filepath = os.path.join(directory,filepath)
-        file = open(filepath, 'r')
-        try:
-            title = json.load(file)['ARTICLE']['TITLE']
-        except:
-            continue
-        if (story_is_covid(title)):
+        with open(file_path, 'r') as file:
+            article = json.load(file)
+        article_title = article.get('ARTICLE', {}).get('TITLE', '')
+        if story_is_covid(title):
             coronavirus_stories.append(filepath)
-        file.close()
     return coronavirus_stories
 
 def story_is_covid(title):
     title = title.lower()
     return ('coronavirus' in title or
-           'covid' in title)
+            'covid' in title)
