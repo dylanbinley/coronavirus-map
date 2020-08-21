@@ -3,7 +3,7 @@
 # pylint: disable=no-self-use
 # pylint: disable=too-few-public-methods
 
-class NewsFilteringService:
+class NewsClassificationService:
     """
     Class to locate news articles related to the novel coronavirus.
     Methods:

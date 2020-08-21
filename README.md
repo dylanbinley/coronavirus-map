@@ -20,6 +20,13 @@ To generate a CSV of GDELT GlobalEventIDs to include in a geographically balance
 ```
 select_balanced_dataset --data_directory=DATA_DIRECTORY --output_file=OUTPUT_FILE
 ```
+## Map Generation
 
-## To-Do List
-1. Convert repository from package to application
+You can generate a map with the latest coronavirus news:
+```
+populate_map
+```
+Alternatively, you can generate a map from data/news_articles:
+```
+backfill_map
+```
