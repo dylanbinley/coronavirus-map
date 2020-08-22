@@ -9,9 +9,9 @@ You will be promoted to add values for 'WANT_ON_MAP' and 'NOTES' through the com
 To call the command line prompts:
 $ label_data --data_directory=DATA_DIR
 The service will print the article title and a portion of the text.
-You will then be asked to enter values for 'WANT_ON_MAP' (y/n, to be converted to boolean) and 'NOTES'
-(comma separated notes, to be converted to list). These values will be added to the JSON object
-saved to the original file.
+You will then be asked to enter values for 'WANT_ON_MAP' (y/n, to be converted to boolean) and
+'NOTES' (comma separated notes, to be converted to list). These values will be added to the JSON
+object saved to the original file.
 """
 
 # pylint: disable=no-self-use
