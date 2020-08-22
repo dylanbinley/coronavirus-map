@@ -1,10 +1,20 @@
+# TODO: update reamde
+# TODO: add docstrings
+
 # pylint: disable=no-self-use
 
 import os
 import json
 import re
 
-COVID_KEYWORDS = ['covid', 'corona', 'pandem', 'epidem', 'mask', 'quarant']
+COVID_KEYWORDS = [
+    'covid',
+    'corona',
+    'pandem',
+    'epidem',
+    'mask',
+    'quarant'
+]
 
 RESPONSE_MAP = {
     'f': False,
@@ -57,7 +67,7 @@ class DataLabelingService:
     def _manually_label(self, data, file_path):
         self._print(data)
         want_on_map = self._parse_response('WANT ON MAP (y/n):\t')
-        notes = self._parse_response('NOTES (csv):\t')
+        notes = self._parse_response('NOTES (csv):\t\t')
         save = self._parse_response('SAVE RESPONSE (y/n):\t')
         if save is not True:
             return
@@ -80,7 +90,7 @@ class DataLabelingService:
 
     def label_directory(self, directory):
         for i, file_name in enumerate(os.listdir(directory)):
-            if (i+1) % 15 == 0:
+            if (i+1) % 10 == 0:
                 print(f'\nLabeling story no. {i+1}')
             try:
                 file_path = os.path.join(directory, file_name)
