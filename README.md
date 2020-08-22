@@ -20,6 +20,14 @@ To generate a CSV of GDELT GlobalEventIDs to include in a geographically balance
 ```
 select_balanced_dataset --data_directory=DATA_DIRECTORY --output_file=OUTPUT_FILE
 ```
+
+## Data Processing
+
+To label training and testing data, use the command line utility:
+```
+label_data --data_directory=DATA_DIR
+```
+
 ## Map Generation
 
 You can generate a map with the latest coronavirus news:
