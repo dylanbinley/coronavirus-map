@@ -6,6 +6,7 @@ setup(
         'console_scripts': [
             'generate_data = training_scripts.cli:generate_data',
             'select_balanced_dataset = training_scripts.cli:select_balanced_dataset',
+            'label_data = training_scripts.cli:label_data',
             'populate_map = coronavirus_map.cli:populate_map',
             'backfill_map = coronavirus_map.cli:backfill_map',
         ],
