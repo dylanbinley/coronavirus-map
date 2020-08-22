@@ -118,9 +118,7 @@ class DataLabelingService:
 
     def label_directory(self, directory):
         """Labels all files in directory"""
-        for i, file_name in enumerate(os.listdir(directory)):
-            if (i+1) % 10 == 0:
-                print(f'\nLabeling story no. {i+1}')
+        for file_name in os.listdir(directory):
             try:
                 file_path = os.path.join(directory, file_name)
                 self.label_file(file_path)
