@@ -30,9 +30,7 @@ class DataLabelingService:
         if len(paragraphs) > max_paragraphs:
             paragraphs = paragraphs[:max_paragraphs] + ['...']
         text = '\n'.join(paragraphs)
-
-        print()
-        print('HEADLINE:\t', headline)
+        print('\nHEADLINE:\t', headline)
         print('TEXT:\t\t', repr(text))
 
     def _parse_response(self, prompt):
@@ -83,9 +81,9 @@ class DataLabelingService:
     def label_directory(self, directory):
         for i, file_name in enumerate(os.listdir(directory)):
             if (i+1) % 15 == 0:
-                print(f'Labeling story no. {i+1}')
+                print(f'\nLabeling story no. {i+1}')
             try:
                 file_path = os.path.join(directory, file_name)
                 self.label_file(file_path)
             except Exception as e:
-                print(f'Encountered exception labeling {file_path}:', repr(e), '\n')
+                print(f'\nEncountered exception labeling {file_path}:', repr(e))
