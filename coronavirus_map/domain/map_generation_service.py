@@ -52,10 +52,22 @@ class MapGenerationService:
             lat='GDELT.Actor1Geo_Lat',
             lon='GDELT.Actor1Geo_Long',
             hover_name='ARTICLE.TITLE',
-            hover_data=['GDELT.SOURCEURL', 'GDELT.Actor1Geo_Fullname'],
+            hover_data={
+                'GDELT.Day': True,
+                'GDELT.Actor1Geo_Fullname': True,
+                'GDELT.SOURCEURL': True,
+                'GDELT.Actor1Geo_Lat': False,
+                'GDELT.Actor1Geo_Long': False,
+            },
+            labels={
+                'GDELT.Day': 'Date',
+                'GDELT.Actor1Geo_Fullname': 'Location',
+                'GDELT.SOURCEURL': 'URL',
+            },
+            color_discrete_sequence=px.colors.sequential.Peach_r,
             zoom=1,
             height=750,
         )
-        plotly_map.update_layout(mapbox_style='open-street-map')
+        plotly_map.update_layout(mapbox_style='stamen-toner')
         plotly_map.update_layout(margin={'r': 0, 't': 0, 'l': 0, 'b': 0})
         return plotly_map
