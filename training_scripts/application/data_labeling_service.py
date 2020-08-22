@@ -47,6 +47,8 @@ class DataLabelingService:
         response = input(prompt)
         if response in RESPONSE_MAP:
             return RESPONSE_MAP[response]
+        if not response:
+            return []
         return re.split(r'\s*,\s*', response.title())
 
     def _covid_in_string(self, string):
