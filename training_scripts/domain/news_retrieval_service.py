@@ -73,8 +73,8 @@ class NewsRetrievalService:
                 yield result
 
     def scrape_random_gdelt_datasets(self, n_datasets):
-        """Scrape latest GDELT dataset"""
-        dataset_urls = list(self._get_number_of_gdelt_dataset_urls(None))
+        """Scrape GDELT datasets from last year"""
+        dataset_urls = list(self._get_number_of_gdelt_dataset_urls(365*24*4))
         for dataset_url in np.random.choice(dataset_urls, n_datasets, replace=False):
             for result in self.scrape_gdelt_dataset(dataset_url):
                 yield result
@@ -91,8 +91,7 @@ class NewsRetrievalService:
         gdelt_master_list = requests.get(GDELT_MASTER_LIST_URL).text
         gdelt_master_list = gdelt_master_list.splitlines()
         gdelt_datasets = [l for l in gdelt_master_list if l.endswith('.export.CSV.zip')]
-        gdelt_datasets.reverse()
-        for dataset in gdelt_datasets[:n_datasets]:
+        for dataset in gdelt_datasets[-n_datasets:]:
             *_, dataset_url = dataset.split()
             yield dataset_url
 
