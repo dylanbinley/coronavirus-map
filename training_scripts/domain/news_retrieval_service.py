@@ -112,7 +112,6 @@ class NewsRetrievalService:
         article_content = {
             'TITLE': article.title,
             'TEXT': article.text,
-            'METADATA': article.meta_data,
         }
         return article_content
 
