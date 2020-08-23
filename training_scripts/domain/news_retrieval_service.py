@@ -18,6 +18,7 @@ Usage:
 # pylint: disable=dangerous-default-value
 # pylint: disable=no-self-use
 
+import numpy as np
 import requests
 import pandas as pd
 from newspaper import Article, ArticleException
@@ -71,6 +72,13 @@ class NewsRetrievalService:
             for result in self.scrape_gdelt_dataset(dataset_url):
                 yield result
 
+    def scrape_random_gdelt_datasets(self, n_datasets):
+        """Scrape latest GDELT dataset"""
+        dataset_urls = list(self._get_number_of_gdelt_dataset_urls(None))
+        for dataset_url in np.random.choice(dataset_urls, n_datasets, replace=False):
+            for result in self.scrape_gdelt_dataset(dataset_url):
+                yield result
+
     def _get_latest_gdelt_dataset_url(self):
         """Get URL for latest GDELT dataset"""
         information_on_latest_dataset = requests.get(GDELT_LATEST_UPDATE_URL).text
@@ -83,7 +91,8 @@ class NewsRetrievalService:
         gdelt_master_list = requests.get(GDELT_MASTER_LIST_URL).text
         gdelt_master_list = gdelt_master_list.splitlines()
         gdelt_datasets = [l for l in gdelt_master_list if l.endswith('.export.CSV.zip')]
-        for dataset in gdelt_datasets[-n_datasets:]:
+        gdelt_datasets.reverse()
+        for dataset in gdelt_datasets[:n_datasets]:
             *_, dataset_url = dataset.split()
             yield dataset_url
 

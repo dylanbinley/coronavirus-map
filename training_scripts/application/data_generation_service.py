@@ -45,3 +45,23 @@ class DataGenerationService:
         for article in news:
             file_path = os.path.join(output_directory, f"{article['GDELT']['GlobalEventID']}.json")
             write_output_file(file_path, article)
+
+
+    def generate_random_data(self, output_directory, hours, days):
+        """
+        Method to generate and save training / testing data.
+        Args:
+            ouput_directory: string, directory where files will be written
+            sample_size: float (0, 1), fraction of total news articles to sample
+            hours: int, number of hours of news to scrape; or
+            days: int, number of days of news to scrape
+        """
+        if not hours and not days:
+            news = self.retriever.scrape_random_gdelt_datasets(1)
+        elif hours:
+            news = self.retriever.scrape_random_gdelt_datasets(4*hours)
+        else:
+            news = self.retriever.scrape_random_gdelt_datasets(4*24*days)
+        for article in news:
+            file_path = os.path.join(output_directory, f"{article['GDELT']['GlobalEventID']}.json")
+            write_output_file(file_path, article)
