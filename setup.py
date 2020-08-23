@@ -15,7 +15,7 @@ setup(
     install_requires=[
         'click',
         'newspaper3k',
-        'pandas',
+        'pandas>=1.1',
         'plotly',
         'requests',
     ]

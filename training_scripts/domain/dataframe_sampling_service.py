@@ -23,18 +23,12 @@ class DataFrameSamplingService:
             dataframe: pandas dataframe
             column: string, column to sample on
         """
-        dataframe_grouped = dataframe.groupby(column)
-        sample_size = self.n_means*int(dataframe_grouped.size().mean())
+        dataframes = dataframe.groupby(column, dropna=False)
+        sample_size = self.n_means*int(dataframes.size().mean())
 
-        def sample(dataframe_group, sample_size):
-            if sample_size > dataframe_group.shape[0]:
-                sample_size = dataframe_group.shape[0]
-            dataframe_group_sampled = dataframe_group.sample(sample_size).reset_index(drop=True)
-            return dataframe_group_sampled
+        def sample(dataframe, max_sample_size):
+            sample_size = min(dataframe.shape[0], max_sample_size)
+            return dataframe.sample(sample_size)
 
-        dataframe_grouped_sampled = dataframe_grouped.apply(
-            lambda dataframe_group: sample(dataframe_group, sample_size)
-        )
-        dataframe_sampled = pd.DataFrame(dataframe_grouped_sampled)
-        dataframe_sampled = dataframe_sampled.droplevel(level=0)
+        dataframe_sampled = pd.concat(sample(dataframe, sample_size) for _, dataframe in dataframes)
         return dataframe_sampled
