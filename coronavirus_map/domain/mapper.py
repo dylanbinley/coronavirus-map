@@ -1,7 +1,5 @@
 """Service to generate a map displaying COVID-19 news around the world."""
 
-import json
-
 import pandas as pd
 import plotly.express as px
 
