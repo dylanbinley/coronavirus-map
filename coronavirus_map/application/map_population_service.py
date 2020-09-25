@@ -1,6 +1,5 @@
 """Service to populate a map with last 15 minutes of GDELT data."""
 
-import training_scripts.domain.dataframe_sampling_service as dataframe_sampling_service
 import training_scripts.domain.news_retrieval_service as news_retrieval_service
 import coronavirus_map.domain.classifier as classifier
 import coronavirus_map.domain.mapper as mapper

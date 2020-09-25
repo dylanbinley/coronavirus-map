@@ -22,14 +22,13 @@ import requests
 import pandas as pd
 from newspaper import Article, ArticleException
 
-import training_scripts.domain.dataframe_sampling_service as dataframe_sampling_service
+import training_scripts.domain.sampler as sampler
 from training_scripts.domain.news_retrieval_service_globals import *
 
 class NewsRetrievalService:
     """
     Service to retrieve news articles and write to JSON files from GDELT TSVs.
     Args:
-        sampler: DataFrameSamplingService
         sample_size: float (0, 1), fraction of articles to scrape
         balance_data: bool, whether or not to geographically balance dataset
         blacklisted_domains: list, URL's not to scrape using newspaper
@@ -40,12 +39,10 @@ class NewsRetrievalService:
     """
 
     def __init__(self,
-                 sampler: dataframe_sampling_service.DataFrameSamplingService,
                  sample_size,
                  balance_data,
                  blacklisted_domains=EXCEPTION_CAUSING_URLS):
         self.balance_data = balance_data
-        self.sampler = sampler
         self.blacklisted_domains = blacklisted_domains
         self.sample_size = sample_size
 
@@ -93,7 +90,7 @@ class NewsRetrievalService:
         df_gdelt = df_gdelt.sample(frac=self.sample_size)
         df_gdelt = df_gdelt.drop_duplicates(subset=["SOURCEURL"])
         if self.balance_data:
-            df_gdelt = self.sampler.sample_dataframe(df_gdelt, 'Actor1Geo_CountryCode')
+            df_gdelt = sampler.sample_dataframe(df_gdelt, 'Actor1Geo_CountryCode')
         return df_gdelt
 
     def _extract_article_contents(self, url):

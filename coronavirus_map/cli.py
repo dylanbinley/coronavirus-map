@@ -12,7 +12,7 @@ import coronavirus_map.domain.mapper as mapper
 
 import training_scripts.application.data_generation_service as data_generation_service
 import training_scripts.application.dataset_selection_service as dataset_selection_service
-import training_scripts.domain.dataframe_sampling_service as dataframe_sampling_service
+import training_scripts.domain.sampler as sampler
 import training_scripts.domain.news_retrieval_service as news_retrieval_service
 
 @click.command()
@@ -23,8 +23,7 @@ def populate_map(output_file):
     Args:
         output_file: string, HTML file to write
     """
-    sampler = dataframe_sampling_service.DataFrameSamplingService()
-    retriever = news_retrieval_service.NewsRetrievalService(sampler, 1, False)
+    retriever = news_retrieval_service.NewsRetrievalService(1, False)
     populator = map_population_service.MapPopulationService(retriever)
     plotly_map = populator.populate_map()
     plotly_map.write_html(output_file)
