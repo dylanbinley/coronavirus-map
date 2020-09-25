@@ -3,7 +3,7 @@
 import click
 
 import training_scripts.application.data_generation_service as data_generation_service
-import training_scripts.application.dataset_selection_service as dataset_selection_service
+import training_scripts.application.dataset_selector as dataset_selector
 import training_scripts.application.data_labeling_service as data_labeling_service
 import training_scripts.domain.sampler as sampler
 
@@ -37,8 +37,7 @@ def select_balanced_dataset(data_directory, output_path):
         data_directory: directory containing JSON-formatted data
         output_file: location to write CSV
     """
-    selector = dataset_selection_service.DatasetSelectionService()
-    selector.select_data(data_directory, output_path)
+    dataset_selector.select_data(data_directory, output_path)
 
 @click.command()
 @click.option('--data_directory', required=True, type=click.STRING)
