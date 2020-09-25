@@ -6,8 +6,10 @@ import json
 import click
 
 import coronavirus_map.application.map_population_service as map_population_service
-import coronavirus_map.domain.map_generation_service as map_generation_service
 import coronavirus_map.domain.classifier as classifier
+import coronavirus_map.domain.mapper as mapper
+
+
 import training_scripts.application.data_generation_service as data_generation_service
 import training_scripts.application.dataset_selection_service as dataset_selection_service
 import training_scripts.domain.dataframe_sampling_service as dataframe_sampling_service
@@ -23,8 +25,7 @@ def populate_map(output_file):
     """
     sampler = dataframe_sampling_service.DataFrameSamplingService()
     retriever = news_retrieval_service.NewsRetrievalService(sampler, 1, False)
-    mapper = map_generation_service.MapGenerationService()
-    populator = map_population_service.MapPopulationService(retriever, mapper)
+    populator = map_population_service.MapPopulationService(retriever)
     plotly_map = populator.populate_map()
     plotly_map.write_html(output_file)
 
@@ -43,6 +44,5 @@ def backfill_map(output_file):
     news_articles = classifier.find_coronavirus_stories(
         json_load(path) for path in glob.glob('data/news_articles/balanced_dataset/*')
     )
-    mapper = map_generation_service.MapGenerationService()
     plotly_map = mapper.generate_map(news_articles)
     plotly_map.write_html(output_file)
