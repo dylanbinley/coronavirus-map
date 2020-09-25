@@ -1,10 +1,8 @@
 """Service to populate a map with last 15 minutes of GDELT data."""
 
-import training_scripts.domain.retriever as retriever
-
 import coronavirus_map.domain.classifier as classifier
 import coronavirus_map.domain.mapper as mapper
-
+import training_scripts.domain.retriever as retriever
 
 
 def populate_map(balance_data, sample_size):

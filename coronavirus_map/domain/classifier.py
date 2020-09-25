@@ -1,5 +1,6 @@
 """Module to identify news articles related to the novel coronavirus."""
 
+
 def _string_contains_covid(string):
     """
     Function to determine whether or not a string contains coronavirus-related words.
@@ -11,6 +12,7 @@ def _string_contains_covid(string):
     string = string.lower()
     contains_covid = 'coronavirus' in string or 'covid' in string
     return contains_covid
+
 
 def find_coronavirus_stories(data_dicts):
     """
@@ -26,5 +28,3 @@ def find_coronavirus_stories(data_dicts):
         if _string_contains_covid(title):
             coronavirus_data_dicts.append(data_dict)
     return coronavirus_data_dicts
-
-

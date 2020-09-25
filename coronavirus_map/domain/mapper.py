@@ -1,12 +1,10 @@
 """Service to generate a map displaying COVID-19 news around the world."""
 
-# pylint: disable=no-self-use
-# pylint: disable=too-few-public-methods
-
 import json
 
 import pandas as pd
 import plotly.express as px
+
 
 def generate_map(data_dicts):
     """
@@ -18,6 +16,7 @@ def generate_map(data_dicts):
     plotly_map = _generate_map_from_dataframe(dataframe)
     return plotly_map
 
+
 def _convert_data_dicts_to_dataframe(data_dicts):
     """
     Function to convert data dicts to dataframe.
@@ -28,6 +27,7 @@ def _convert_data_dicts_to_dataframe(data_dicts):
     """
     dataframe = pd.json_normalize(data_dicts)
     return dataframe
+
 
 def _generate_map_from_dataframe(dataframe):
     """
