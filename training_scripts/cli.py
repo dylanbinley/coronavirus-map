@@ -4,7 +4,7 @@ import click
 
 import training_scripts.application.data_generation_service as data_generation_service
 import training_scripts.application.dataset_selector as dataset_selector
-import training_scripts.application.data_labeling_service as data_labeling_service
+import training_scripts.application.data_labeler as data_labeler
 import training_scripts.domain.sampler as sampler
 
 @click.command()
@@ -42,5 +42,4 @@ def select_balanced_dataset(data_directory, output_path):
 @click.command()
 @click.option('--data_directory', required=True, type=click.STRING)
 def label_data(data_directory):
-    labeler = data_labeling_service.DataLabelingService()
-    labeler.label_directory(data_directory)
+    data_labeler.label_directory(data_directory)

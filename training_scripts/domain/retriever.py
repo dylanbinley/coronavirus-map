@@ -80,7 +80,11 @@ GDELT_COLUMNS = [
     'SOURCEURL',
 ]
 
-def scrape_gdelt_dataset(url, balance_data, sample_size, blacklisted_domains=EXCEPTION_CAUSING_URLS):
+
+def scrape_gdelt_dataset(url,
+                         balance_data,
+                         sample_size,
+                         blacklisted_domains=EXCEPTION_CAUSING_URLS):
     """Scrape articles linked GDELT dataset and write them to files"""
     df_gdelt = _format_gdelt_dataframe(url, balance_data, sample_size)
     for _, row in df_gdelt.iterrows():
@@ -90,17 +94,23 @@ def scrape_gdelt_dataset(url, balance_data, sample_size, blacklisted_domains=EXC
         except ArticleException as exception:
             print(repr(exception))
 
-def scrape_latest_gdelt_dataset(balance_data, sample_size, blacklisted_domains=EXCEPTION_CAUSING_URLS):
+
+def scrape_latest_gdelt_dataset(balance_data,
+                                sample_size,
+                                blacklisted_domains=EXCEPTION_CAUSING_URLS):
     """Scrape latest GDELT dataset"""
     latest_dataset_url = _get_latest_gdelt_dataset_url()
-    for result in scrape_gdelt_dataset(latest_dataset_url, balance_data, sample_size, blacklisted_domains):
+    for result in scrape_gdelt_dataset(latest_dataset_url, balance_data,
+                                       sample_size, blacklisted_domains):
         yield result
+
 
 def scrape_latest_gdelt_datasets(n_datasets):
     """Scrape latest GDELT dataset"""
     for dataset_url in _get_number_of_gdelt_dataset_urls(n_datasets):
         for result in scrape_gdelt_dataset(dataset_url):
             yield result
+
 
 def _get_latest_gdelt_dataset_url():
     """Get URL for latest GDELT dataset"""
@@ -109,14 +119,18 @@ def _get_latest_gdelt_dataset_url():
     *_, latest_dataset_url = line_with_latest_dataset.split()
     return latest_dataset_url
 
+
 def _get_number_of_gdelt_dataset_urls(n_datasets):
     """Get URL for latest n GDELT datasets"""
     gdelt_master_list = requests.get(GDELT_MASTER_LIST_URL).text
     gdelt_master_list = gdelt_master_list.splitlines()
-    gdelt_datasets = [l for l in gdelt_master_list if l.endswith('.export.CSV.zip')]
+    gdelt_datasets = [
+        l for l in gdelt_master_list if l.endswith('.export.CSV.zip')
+    ]
     for dataset in gdelt_datasets[-n_datasets:]:
         *_, dataset_url = dataset.split()
         yield dataset_url
+
 
 def _format_gdelt_dataframe(url, balance_data, sample_size):
     """Create dataframe from URL containing zipped CSV of GDELT data"""
@@ -126,6 +140,7 @@ def _format_gdelt_dataframe(url, balance_data, sample_size):
     if balance_data:
         df_gdelt = sampler.sample_dataframe(df_gdelt, 'Actor1Geo_CountryCode')
     return df_gdelt
+
 
 def _extract_article_contents(url):
     """Get title and text from URL"""
@@ -138,6 +153,7 @@ def _extract_article_contents(url):
         'METADATA': article.meta_data,
     }
     return article_content
+
 
 def _build_article_dict(row, blacklisted_domains):
     """Create article dictionary from dataframe row"""
