@@ -1,27 +1,15 @@
-"""Module to identify news articles related to the novel coronavirus."""
+"""Identifies news articles related to the novel coronavirus."""
+
+from typing import List
 
 
-def _string_contains_covid(string):
-    """
-    Function to determine whether or not a string contains coronavirus-related words.
-    Args:
-        string: str
-    Returns:
-        contains_covid: bool
-    """
+def _string_contains_covid(string: str) -> bool:
     string = string.lower()
     contains_covid = 'coronavirus' in string or 'covid' in string
     return contains_covid
 
 
-def find_coronavirus_stories(data_dicts):
-    """
-    Function to find coronavirus stories.
-    Args:
-        data_dicts: list, dictionaries containing article data
-    Returns:
-        coronavirus_data_dicts: list, dicionaries containing coronavirus article data
-    """
+def find_coronavirus_stories(data_dicts: List[dict]) -> List[dict]:
     coronavirus_data_dicts = []
     for data_dict in data_dicts:
         title = data_dict.get('ARTICLE', {}).get('TITLE', '')

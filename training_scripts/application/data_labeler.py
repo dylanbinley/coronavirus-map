@@ -30,8 +30,7 @@ RESPONSE_MAP = {
 }
 
 
-def _print(data, max_paragraphs=10):
-    """Prints data headline and up to ten paragraphs of text."""
+def _print(data: dict, max_paragraphs: int = 10):
     headline = data['ARTICLE']['TITLE']
     paragraphs = [
         p.strip() for p in data['ARTICLE']['TEXT'].splitlines() if p.strip()
@@ -43,8 +42,7 @@ def _print(data, max_paragraphs=10):
     print('TEXT:\t\t', repr(text))
 
 
-def _parse_response(prompt):
-    """Accepts user input and converts response to bool or list."""
+def _parse_response(prompt: str):
     response = input(prompt)
     if response in RESPONSE_MAP:
         return RESPONSE_MAP[response]
@@ -53,26 +51,22 @@ def _parse_response(prompt):
     return re.split(r'\s*,\s*', response.title())
 
 
-def _covid_in_string(string):
-    """Returns bool: string contains coronavirus keywords."""
+def _covid_in_string(string: str):
     return any(w in string.lower() for w in COVID_KEYWORDS)
 
 
-def _covid_in_data(data):
-    """Returns bool: data headline or text contain coronavirus keywords."""
+def _covid_in_data(data: dict):
     return _covid_in_string(data['ARTICLE']['TITLE']) or \
         _covid_in_string(data['ARTICLE']['TEXT'])
 
 
-def _auto_label(data, file_path):
-    """Automatically labels data that does not contain coronavirus keywords."""
+def _auto_label(data: dict, file_path: str):
     data['LABEL'] = {'WANT_ON_MAP': False, 'NOTES': ['No Coronavirus Keywords']}
     with open(file_path, 'w') as file:
         json.dump(data, file)
 
 
-def _manually_label(data, file_path):
-    """Prints article information, asks for user input, and saves labels."""
+def _manually_label(data: dict, file_path: str):
     _print(data)
     want_on_map = _parse_response('WANT ON MAP (y/n):\t')
     notes = _parse_response('NOTES (csv):\t\t')
@@ -84,8 +78,7 @@ def _manually_label(data, file_path):
         json.dump(data, file)
 
 
-def label_file(file_path):
-    """Labels file at file_path"""
+def label_file(file_path: str):
     with open(file_path, 'r') as file:
         data = json.load(file)
     if data.get('LABEL'):
@@ -96,8 +89,7 @@ def label_file(file_path):
         _auto_label(data, file_path)
 
 
-def label_directory(directory):
-    """Labels all files in directory"""
+def label_directory(directory: str):
     for i, file_name in enumerate(os.listdir(directory)):
         if (i + 1) % 10 == 0:
             print(f'\nLabeling story no. {i+1}')

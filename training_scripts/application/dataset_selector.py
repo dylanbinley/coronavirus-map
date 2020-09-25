@@ -1,5 +1,7 @@
 """Service to select geographically balanced dataset and write to CSV."""
 
+from typing import List
+
 import json
 import os
 
@@ -15,22 +17,13 @@ KEYS_TO_KEEP = [
 ]
 
 
-def _file_contents_to_dataframe(data_dicts, columns_to_keep):
-    """
-    Function to create pandas DataFrame from Python dictionaries.
-    Args:
-        data_dicts: list, Python dictionaries of data
-        columns_to_keep: list, columns to keep
-    Returns:
-        dataframe
-    """
+def _file_contents_to_dataframe(data_dicts: List[dict], columns_to_keep: List[str]) -> pd.DataFrame:
     dataframe = pd.json_normalize(data_dicts)
     dataframe = dataframe[columns_to_keep]
     return dataframe
 
 
-def load_files_from_directory(directory):
-    """Function to load JSONs of data from a directory."""
+def load_files_from_directory(directory: str) -> List[str]:
     file_contents = []
     for file_path in os.listdir(directory):
         full_file_path = os.path.join(directory, file_path)
@@ -42,13 +35,7 @@ def load_files_from_directory(directory):
     return file_contents
 
 
-def select_data(directory, output_path):
-    """
-    Function to geographically balance dataset and write output to CSV.
-    Args:
-        data_directory: directory containing JSON-formatted data
-        output_file: location to write CSV
-    """
+def select_data(directory: str, output_path: str):
     data_dicts = load_files_from_directory(directory)
     column_to_balance = '.'.join(KEYS_TO_BALANCE)
     columns_to_keep = ['.'.join(keys) for keys in KEYS_TO_KEEP]

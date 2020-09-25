@@ -1,39 +1,28 @@
 """Service to generate a map displaying COVID-19 news around the world."""
 
+from typing import List
+
 import pandas as pd
 import plotly.express as px
 
 
-def generate_map(data_dicts):
-    """
-    Function to generate map.
-    Args:
-        data_dict: list, dictionaries containing article data
-    """
+def generate_map(data_dicts: List[str]):
     dataframe = _convert_data_dicts_to_dataframe(data_dicts)
     plotly_map = _generate_map_from_dataframe(dataframe)
     return plotly_map
 
 
-def _convert_data_dicts_to_dataframe(data_dicts):
-    """
-    Function to convert data dicts to dataframe.
-    Args:
-        data_dicts: list, dictionaries of file contents
-    Returns:
-        dataframe: pd.DataFrame
-    """
+def _convert_data_dicts_to_dataframe(data_dicts: List[str]) -> pd.DataFrame:
     dataframe = pd.json_normalize(data_dicts)
     return dataframe
 
-
-def _generate_map_from_dataframe(dataframe):
+def _generate_map_from_dataframe(dataframe: pd.DataFrame):
     """
     Function to generate map from Pandas dataframe.
     Args:
         dataframe: pd.DataFrame
     Returns:
-        plotly_map: plotly.graph_objs._figure.Figure
+        plotly_map:
     """
     plotly_map = px.scatter_mapbox(
         dataframe,
