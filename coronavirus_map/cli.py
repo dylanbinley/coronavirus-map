@@ -5,7 +5,7 @@ import json
 
 import click
 
-import coronavirus_map.application.map_population_service as map_population_service
+import coronavirus_map.application.map_populator as map_populator
 import coronavirus_map.domain.classifier as classifier
 import coronavirus_map.domain.mapper as mapper
 
@@ -22,8 +22,7 @@ def populate_map(output_file):
     Args:
         output_file: string, HTML file to write
     """
-    populator = map_population_service.MapPopulationService()
-    plotly_map = populator.populate_map(False, 1)
+    plotly_map = map_populator.populate_map(False, 1)
     plotly_map.write_html(output_file)
 
 
