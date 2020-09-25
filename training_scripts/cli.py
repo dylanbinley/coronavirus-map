@@ -6,7 +6,6 @@ import training_scripts.application.data_generation_service as data_generation_s
 import training_scripts.application.dataset_selection_service as dataset_selection_service
 import training_scripts.application.data_labeling_service as data_labeling_service
 import training_scripts.domain.sampler as sampler
-import training_scripts.domain.news_retrieval_service as news_retrieval_service
 
 @click.command()
 @click.option('--output_directory', required=True, type=click.STRING)
@@ -24,8 +23,7 @@ def generate_data(output_directory, sample_size, hours, days, balance_data):
         days: int, number of days of news to scrape
         balance_data: bool, whether or not to geographically balance dataset
     """
-    retriever = news_retrieval_service.NewsRetrievalService(sample_size, balance_data)
-    generator = data_generation_service.DataGenerationService(retriever)
+    generator = data_generation_service.DataGenerationService()
     generator.generate_data(output_directory, hours, days)
 
 

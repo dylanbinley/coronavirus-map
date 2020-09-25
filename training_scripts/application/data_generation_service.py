@@ -4,13 +4,10 @@ Use via CLI:
 $ generate_data --output_directory=$OUTPUT_DIR --sample_size=$SAMPLE_SIZE --days=$DAYS
 """
 
-# pylint: disable=too-few-public-methods
-# pylint: disable=no-self-use
-
 import json
 import os
 
-import training_scripts.domain.news_retrieval_service as news_retrieval_service
+import training_scripts.domain.retriever as retriever
 
 def write_output_file(file_path, file_content):
     """Use JSON dump to write file"""
@@ -23,9 +20,8 @@ def write_output_file(file_path, file_content):
 class DataGenerationService:
     """Class to generate and save training / testing data."""
 
-    def __init__(self,
-                 news_retriever: news_retrieval_service.NewsRetrievalService):
-        self.retriever = news_retriever
+    def __init__(self):
+        pass
 
     def generate_data(self, output_directory, hours, days):
         """
@@ -37,11 +33,11 @@ class DataGenerationService:
             days: int, number of days of news to scrape
         """
         if not hours and not days:
-            news = self.retriever.scrape_latest_gdelt_dataset()
+            news = retriever.scrape_latest_gdelt_dataset()
         elif hours:
-            news = self.retriever.scrape_latest_gdelt_datasets(4*hours)
+            news = retriever.scrape_latest_gdelt_datasets(4*hours)
         else:
-            news = self.retriever.scrape_latest_gdelt_datasets(4*24*days)
+            news = retriever.scrape_latest_gdelt_datasets(4*24*days)
         for article in news:
             file_path = os.path.join(output_directory, f"{article['GDELT']['GlobalEventID']}.json")
             write_output_file(file_path, article)
