@@ -2,11 +2,11 @@
 
 import click
 
-import training_scripts.application.data_generation_service as data_generation_service
-import training_scripts.application.dataset_selection_service as dataset_selection_service
-import training_scripts.application.data_labeling_service as data_labeling_service
-import training_scripts.domain.dataframe_sampling_service as dataframe_sampling_service
-import training_scripts.domain.news_retrieval_service as news_retrieval_service
+import training_scripts.application.data_generator as data_generator
+import training_scripts.application.dataset_selector as dataset_selector
+import training_scripts.application.data_labeler as data_labeler
+import training_scripts.domain.sampler as sampler
+
 
 @click.command()
 @click.option('--output_directory', required=True, type=click.STRING)
@@ -24,10 +24,7 @@ def generate_data(output_directory, sample_size, hours, days, balance_data):
         days: int, number of days of news to scrape
         balance_data: bool, whether or not to geographically balance dataset
     """
-    balancer = dataframe_sampling_service.DataFrameSamplingService()
-    retriever = news_retrieval_service.NewsRetrievalService(balancer, sample_size, balance_data)
-    generator = data_generation_service.DataGenerationService(retriever)
-    generator.generate_data(output_directory, hours, days)
+    data_generator.generate_data(output_directory, balance_data, sample_size, hours, days)
 
 
 @click.command()
@@ -40,12 +37,10 @@ def select_balanced_dataset(data_directory, output_path):
         data_directory: directory containing JSON-formatted data
         output_file: location to write CSV
     """
-    balancer = dataframe_sampling_service.DataFrameSamplingService()
-    selector = dataset_selection_service.DatasetSelectionService(balancer)
-    selector.select_data(data_directory, output_path)
+    dataset_selector.select_data(data_directory, output_path)
+
 
 @click.command()
 @click.option('--data_directory', required=True, type=click.STRING)
 def label_data(data_directory):
-    labeler = data_labeling_service.DataLabelingService()
-    labeler.label_directory(data_directory)
+    data_labeler.label_directory(data_directory)
