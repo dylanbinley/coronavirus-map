@@ -17,7 +17,8 @@ KEYS_TO_KEEP = [
 ]
 
 
-def _file_contents_to_dataframe(data_dicts: List[dict], columns_to_keep: List[str]) -> pd.DataFrame:
+def _file_contents_to_dataframe(data_dicts: List[dict],
+                                columns_to_keep: List[str]) -> pd.DataFrame:
     dataframe = pd.json_normalize(data_dicts)
     dataframe = dataframe[columns_to_keep]
     return dataframe

@@ -5,11 +5,13 @@ import os
 
 import training_scripts.domain.retriever as retriever
 
+
 def write_output_file(file_path: str, file_content: dict):
     if not os.path.exists(os.path.dirname(file_path)):
         os.makedirs(os.path.dirname(file_path))
     with open(file_path, 'w') as file:
         json.dump(file_content, file)
+
 
 def generate_data(output_directory: str, hours: int, days: int):
     if not hours and not days:

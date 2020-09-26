@@ -9,6 +9,11 @@ import coronavirus_map.domain.classifier as classifier
 import coronavirus_map.domain.mapper as mapper
 
 
+def _load_json(file_path):
+    with open(file_path, 'r') as file:
+        return json.load(file)
+
+
 @click.command()
 @click.option('--output_file', type=click.STRING, default='maps/populated.html')
 def populate_map(output_file):
@@ -29,11 +34,8 @@ def backfill_map(output_file):
     Args:
         output_file: string, HTML file to write
     """
-    def json_load(file_path):
-        with open(file_path, 'r') as file:
-            return json.load(file)
     news_articles = classifier.find_coronavirus_stories(
-        json_load(path) for path in glob.glob('data/news_articles/balanced_dataset/*')
+        _load_json(path) for path in glob.glob('data/news_articles/balanced_dataset/*')
     )
     plotly_map = mapper.generate_map(news_articles)
     plotly_map.write_html(output_file)

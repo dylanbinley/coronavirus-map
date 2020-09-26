@@ -16,6 +16,7 @@ def _convert_data_dicts_to_dataframe(data_dicts: List[str]) -> pd.DataFrame:
     dataframe = pd.json_normalize(data_dicts)
     return dataframe
 
+
 def _generate_map_from_dataframe(dataframe: pd.DataFrame):
     """
     Function to generate map from Pandas dataframe.

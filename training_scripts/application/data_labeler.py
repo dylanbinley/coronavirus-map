@@ -18,7 +18,14 @@ import json
 import os
 import re
 
-COVID_KEYWORDS = ['covid', 'corona', 'pandem', 'epidem', 'mask', 'quarant']
+COVID_KEYWORDS = [
+    'covid',
+    'corona',
+    'pandem',
+    'epidem',
+    'mask',
+    'quarant',
+]
 
 RESPONSE_MAP = {
     'f': False,
@@ -33,7 +40,9 @@ RESPONSE_MAP = {
 def _print(data: dict, max_paragraphs: int = 10):
     headline = data['ARTICLE']['TITLE']
     paragraphs = [
-        p.strip() for p in data['ARTICLE']['TEXT'].splitlines() if p.strip()
+        p.strip()
+        for p in data['ARTICLE']['TEXT'].splitlines()
+        if p.strip()
     ]
     if len(paragraphs) > max_paragraphs:
         paragraphs = paragraphs[:max_paragraphs] + ['...']
@@ -61,7 +70,10 @@ def _covid_in_data(data: dict):
 
 
 def _auto_label(data: dict, file_path: str):
-    data['LABEL'] = {'WANT_ON_MAP': False, 'NOTES': ['No Coronavirus Keywords']}
+    data['LABEL'] = {
+        'WANT_ON_MAP': False,
+        'NOTES': ['No Coronavirus Keywords']
+    }
     with open(file_path, 'w') as file:
         json.dump(data, file)
 
@@ -73,7 +85,10 @@ def _manually_label(data: dict, file_path: str):
     save = _parse_response('SAVE RESPONSE (y/n):\t')
     if save is not True:
         return
-    data['LABEL'] = {'WANT_ON_MAP': want_on_map, 'NOTES': notes}
+    data['LABEL'] = {
+        'WANT_ON_MAP': want_on_map,
+        'NOTES': notes
+    }
     with open(file_path, 'w') as file:
         json.dump(data, file)
 

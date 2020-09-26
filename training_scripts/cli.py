@@ -7,6 +7,7 @@ import training_scripts.application.dataset_selector as dataset_selector
 import training_scripts.application.data_labeler as data_labeler
 import training_scripts.domain.sampler as sampler
 
+
 @click.command()
 @click.option('--output_directory', required=True, type=click.STRING)
 @click.option('--sample_size', required=True, type=click.FLOAT)
@@ -37,6 +38,7 @@ def select_balanced_dataset(data_directory, output_path):
         output_file: location to write CSV
     """
     dataset_selector.select_data(data_directory, output_path)
+
 
 @click.command()
 @click.option('--data_directory', required=True, type=click.STRING)
