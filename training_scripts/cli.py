@@ -24,7 +24,7 @@ def generate_data(output_directory, sample_size, hours, days, balance_data):
         days: int, number of days of news to scrape
         balance_data: bool, whether or not to geographically balance dataset
     """
-    data_generator.generate_data(output_directory, hours, days)
+    data_generator.generate_data(output_directory, balance_data, sample_size, hours, days)
 
 
 @click.command()
