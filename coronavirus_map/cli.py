@@ -23,7 +23,11 @@ def populate_map(output_file):
         output_file: string, HTML file to write
     """
     plotly_map = map_populator.populate_map(False, 1)
-    plotly_map.write_html(output_file)
+    #plotly_map.write_html(output_file)
+
+    # Write out HTML file
+    with open(output_file, 'w') as f:
+        f.write(plotly_map)
 
 
 @click.command()
@@ -38,4 +42,6 @@ def backfill_map(output_file):
         _load_json(path) for path in glob.glob('data/news_articles/balanced_dataset/*')
     )
     plotly_map = mapper.generate_map(news_articles)
-    plotly_map.write_html(output_file)
+    #plotly_map.write_html(output_file)
+    with open(output_file, 'w') as f:
+        f.write(plotly_map)
