@@ -1,5 +1,4 @@
 """Service to retrieve news articles from GDELT news tracker."""
-
 import requests
 import pandas as pd
 from newspaper import Article, ArticleException
@@ -105,10 +104,12 @@ def scrape_latest_gdelt_dataset(balance_data,
         yield result
 
 
-def scrape_latest_gdelt_datasets(n_datasets):
-    """Scrape latest GDELT dataset"""
+def scrape_latest_gdelt_datasets(n_datasets,
+                                balance_data,
+                                sample_size):
+    """Scrape latest GDELT datasets"""
     for dataset_url in _get_number_of_gdelt_dataset_urls(n_datasets):
-        for result in scrape_gdelt_dataset(dataset_url):
+        for result in scrape_gdelt_dataset(dataset_url, balance_data, sample_size):
             yield result
 
 
