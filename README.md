@@ -2,6 +2,8 @@
 
 This is an in-progress application to find and map the lastest local news on COVID-19 from around the globe.
 
+![Map Photo](/images/screenshot.png)
+
 ## Installation
 
 Right now, this repository is set up as a Python package. Inside the repository:
@@ -9,6 +11,10 @@ Right now, this repository is set up as a Python package. Inside the repository:
 pip install -e .
 ```
 to install the requirements and command line utilities.
+
+## Sample Map
+
+Open ```maps/backfilled.html``` to see a map with data from data/news_articles. Hover on data points to view story previews. Click to be redirected to an article's url.
 
 ## Data Generation
 
@@ -38,7 +44,3 @@ Alternatively, you can generate a map from data/news_articles:
 ```
 backfill_map
 ```
-
-## View Sample Map
-
-Open ```maps/backfilled.html``` to see the map with data from data/news_articles.
