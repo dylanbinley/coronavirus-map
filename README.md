@@ -2,6 +2,8 @@
 
 This is an in-progress application to find and map the lastest local news on COVID-19 from around the globe.
 
+![Map Photo](/images/screenshot.png)
+
 ## Installation
 
 Right now, this repository is set up as a Python package. Inside the repository:
