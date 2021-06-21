@@ -43,4 +43,4 @@ backfill_map
 
 ## View Sample Map
 
-Open ```maps/backfilled.html``` to see the map with data from data/news_articles.
+Open ```maps/backfilled.html``` to see the map with data from data/news_articles. Hover on data points to view story previews. Click to be redirected to an article's url.
