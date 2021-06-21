@@ -38,3 +38,7 @@ Alternatively, you can generate a map from data/news_articles:
 ```
 backfill_map
 ```
+
+## View Sample Map
+
+Open ```maps/backfilled.html``` to see the map with data from data/news_articles.
