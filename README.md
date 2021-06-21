@@ -12,6 +12,10 @@ pip install -e .
 ```
 to install the requirements and command line utilities.
 
+## View Sample Map
+
+Open ```maps/backfilled.html``` to see the map with data from data/news_articles. Hover on data points to view story previews. Click to be redirected to an article's url.
+
 ## Data Generation
 
 To generate training and testing data, use the command line utility:
@@ -40,7 +44,3 @@ Alternatively, you can generate a map from data/news_articles:
 ```
 backfill_map
 ```
-
-## View Sample Map
-
-Open ```maps/backfilled.html``` to see the map with data from data/news_articles. Hover on data points to view story previews. Click to be redirected to an article's url.
