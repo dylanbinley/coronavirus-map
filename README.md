@@ -12,9 +12,9 @@ pip install -e .
 ```
 to install the requirements and command line utilities.
 
-## View Sample Map
+## Sample Map
 
-Open ```maps/backfilled.html``` to see the map with data from data/news_articles. Hover on data points to view story previews. Click to be redirected to an article's url.
+Open ```maps/backfilled.html``` to see a map with data from data/news_articles. Hover on data points to view story previews. Click to be redirected to an article's url.
 
 ## Data Generation
 
